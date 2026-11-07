@@ -1,0 +1,1 @@
+export { BcSwitch } from './Switch'
