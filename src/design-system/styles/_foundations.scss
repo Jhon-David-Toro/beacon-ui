@@ -1,0 +1,22 @@
+// Foundations shared by every theme: type, spacing, shape and motion.
+$font-display: ('Bricolage Grotesque Variable', 'Segoe UI', sans-serif);
+$font-body: ('Schibsted Grotesk Variable', 'Segoe UI', sans-serif);
+$type-sizes: (
+  'xs': 0.75rem,
+  's': 0.875rem,
+  'm': 1rem,
+  'l': 1.25rem,
+  'xl': 1.75rem,
+  '2xl': clamp(2.25rem, 1.4rem + 3.6vw, 4.25rem),
+);
+$spacing: (4, 8, 12, 16, 24, 32, 48, 64);
+$radii: (
+  's': 4px,
+  'm': 8px,
+  'l': 14px,
+  'pill': 999px,
+);
+$breakpoints: (
+  'tablet': 720px,
+  'desktop': 1080px,
+);

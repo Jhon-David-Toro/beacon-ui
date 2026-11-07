@@ -1,0 +1,42 @@
+@use 'palette' as *;
+
+// Semantic colours per theme. Components only read these custom properties,
+// which inherit through shadow roots, so switching theme needs no rebuild.
+$light: (
+  'bg': color('paper-50'),
+  'surface': #fff,
+  'surface-sunken': color('paper-100'),
+  'border': color('paper-200'),
+  'border-strong': color('ink-300'),
+  'text': color('ink-900'),
+  'text-muted': color('ink-500'),
+  'accent': color('lamp-400'),
+  'accent-text': color('lamp-600'),
+  'primary': color('ink-900'),
+  'on-primary': color('paper-50'),
+  'focus': color('lamp-600'),
+  'operational': color('sea-500'),
+  'degraded': color('lamp-600'),
+  'outage': color('flare-500'),
+  'maintenance': color('dusk-500'),
+  'empty': color('paper-200'),
+);
+$dark: (
+  'bg': #0e1729,
+  'surface': #152038,
+  'surface-sunken': #0b1322,
+  'border': #24314d,
+  'border-strong': #3a4a6b,
+  'text': color('paper-50'),
+  'text-muted': color('ink-300'),
+  'accent': color('lamp-400'),
+  'accent-text': color('lamp-400'),
+  'primary': color('lamp-400'),
+  'on-primary': color('ink-900'),
+  'focus': color('lamp-400'),
+  'operational': color('sea-300'),
+  'degraded': color('lamp-400'),
+  'outage': color('flare-300'),
+  'maintenance': color('dusk-300'),
+  'empty': #24314d,
+);

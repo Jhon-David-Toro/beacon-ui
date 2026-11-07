@@ -1,0 +1,24 @@
+@use 'sass:map';
+
+// Raw palette. Only the semantic themes below read these; components never do.
+$palette: (
+  'ink-900': #14213d,
+  'ink-700': #2c3a57,
+  'ink-500': #5b6883,
+  'ink-300': #a7b0c0,
+  'paper-50': #f6f8f6,
+  'paper-100': #edf1ee,
+  'paper-200': #dfe5e1,
+  'lamp-400': #f2a541,
+  'lamp-600': #b86e0a,
+  'sea-500': #2b6f77,
+  'sea-300': #7fb7bc,
+  'flare-500': #c63d50,
+  'flare-300': #ec8b98,
+  'dusk-500': #6c5b9e,
+  'dusk-300': #a99ad6,
+);
+
+@function color($name) {
+  @return map.get($palette, $name);
+}

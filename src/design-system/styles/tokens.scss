@@ -1,0 +1,60 @@
+// Global entry point: emits every design token as a custom property on :root.
+// Import it once per page (the app does it in main.ts, next to the fonts).
+@use 'sass:map';
+@use 'palette' as *;
+@use 'foundations' as *;
+@use 'themes';
+
+@mixin theme($colors) {
+  @each $name, $value in $colors {
+    --bc-color-#{$name}: #{$value};
+  }
+}
+
+:root {
+  @each $name, $value in $palette {
+    --bc-#{$name}: #{$value};
+  }
+
+  --bc-font-display: #{$font-display};
+  --bc-font-body: #{$font-body};
+
+  @each $name, $value in $type-sizes {
+    --bc-text-#{$name}: #{$value};
+  }
+
+  --bc-leading-tight: 1.1;
+  --bc-leading-body: 1.5;
+
+  @each $step in $spacing {
+    --bc-space-#{$step}: #{$step * 0.0625rem};
+  }
+
+  @each $name, $value in $radii {
+    --bc-radius-#{$name}: #{$value};
+  }
+
+  --bc-duration-fast: 120ms;
+  --bc-duration-base: 220ms;
+  --bc-ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --bc-target-min: 44px;
+
+  color-scheme: light;
+  @include theme(themes.$light);
+
+  --bc-shadow-overlay: 0 24px 48px -12px rgb(20 33 61 / 28%);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  @include theme(themes.$dark);
+
+  --bc-shadow-overlay: 0 24px 48px -12px rgb(0 0 0 / 60%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --bc-duration-fast: 0ms;
+    --bc-duration-base: 0ms;
+  }
+}

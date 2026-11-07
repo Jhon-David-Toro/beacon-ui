@@ -1,0 +1,66 @@
+@use 'mixins' as *;
+
+// Layout shared by every labelled form control: label, control, hint, error.
+@mixin field {
+  :host {
+    display: grid;
+    gap: var(--bc-space-8);
+  }
+
+  label {
+    @include type('s', 600);
+  }
+
+  .required {
+    color: var(--bc-color-outage);
+  }
+
+  .hint,
+  .error {
+    margin: 0;
+    @include type('xs');
+  }
+
+  .hint {
+    color: var(--bc-color-text-muted);
+  }
+
+  .error {
+    display: flex;
+    align-items: center;
+    gap: var(--bc-space-4);
+    color: var(--bc-color-outage);
+    font-weight: 600;
+  }
+}
+
+// Visual box of inputs, selects and textareas.
+@mixin control-box {
+  width: 100%;
+  @include touch-target;
+  padding: var(--bc-space-8) var(--bc-space-12);
+  border: 1px solid var(--bc-color-border-strong);
+  border-radius: var(--bc-radius-m);
+  background: var(--bc-color-surface);
+  color: var(--bc-color-text);
+  @include type('m');
+  transition: border-color var(--bc-duration-fast) var(--bc-ease-out);
+
+  &:hover {
+    border-color: var(--bc-color-text-muted);
+  }
+
+  &:focus-visible {
+    @include focus-ring(1px);
+    border-color: var(--bc-color-focus);
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--bc-color-outage);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}

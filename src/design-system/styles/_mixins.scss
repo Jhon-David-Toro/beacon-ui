@@ -1,0 +1,122 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:string';
+@use 'foundations' as *;
+
+// Reading helpers: components write `space(16)` instead of the raw custom
+// property, so a typo fails the build instead of silently resolving to nothing.
+
+@function space($step) {
+  @if not list.index($spacing, $step) {
+    @error 'Unknown spacing step #{$step}. Use one of #{$spacing}.';
+  }
+  @return var(--bc-space-#{$step});
+}
+
+@function token($name) {
+  @return var(--bc-color-#{$name});
+}
+
+@function radius($name) {
+  @if not map.has-key($radii, $name) {
+    @error 'Unknown radius "#{$name}".';
+  }
+  @return var(--bc-radius-#{$name});
+}
+
+@mixin type($size, $weight: 400, $family: 'body', $leading: var(--bc-leading-body)) {
+  @if not map.has-key($type-sizes, $size) {
+    @error 'Unknown type size "#{$size}".';
+  }
+  font: $weight var(--bc-text-#{$size}) / $leading var(--bc-font-#{$family});
+}
+
+@mixin from($breakpoint) {
+  @media (min-width: map.get($breakpoints, $breakpoint)) {
+    @content;
+  }
+}
+
+// Base every component host gets: border-box sizing, body font, and a
+// `hidden` attribute that wins over the host's own `display`.
+@mixin host-base {
+  :host {
+    box-sizing: border-box;
+    font-family: var(--bc-font-body);
+    color: token('text');
+  }
+
+  :host([hidden]) {
+    display: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+}
+
+@mixin focus-ring($offset: 2px) {
+  outline: 2px solid token('focus');
+  outline-offset: $offset;
+}
+
+@mixin focus-visible-ring {
+  :focus-visible {
+    @include focus-ring;
+  }
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+$tones: (
+  'success': 'operational',
+  'warning': 'degraded',
+  'danger': 'outage',
+  'info': 'maintenance',
+);
+
+// Replaces the first `$search` in `$string` with `$replace`.
+@function str-replace($string, $search, $replace) {
+  $index: string.index($string, $search);
+  @if not $index {
+    @return $string;
+  }
+
+  $before: string.slice($string, 1, $index - 1);
+  $after: string.slice($string, $index + string.length($search));
+  @return $before + $replace + $after;
+}
+
+// Emits one rule per tone that sets `--tone` to the matching status colour.
+// `$selector` is a template where `&tone&` stands for the tone name, e.g.
+// ":host([tone='&tone&'])".
+@mixin tone-variants($selector) {
+  @each $tone, $color in $tones {
+    #{str-replace($selector, '&tone&', $tone)} {
+      --tone: #{token($color)};
+    }
+  }
+}
+
+// WCAG 2.5.8 / Apple HIG minimum hit area for anything clickable.
+@mixin touch-target {
+  min-height: var(--bc-target-min);
+}
