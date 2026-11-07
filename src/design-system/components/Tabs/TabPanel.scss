@@ -1,0 +1,12 @@
+@use '../../styles/mixins' as *;
+
+@include host-base;
+
+:host {
+  display: block;
+}
+
+:host(:focus-visible) {
+  @include focus-ring(4px);
+  border-radius: var(--bc-radius-s);
+}

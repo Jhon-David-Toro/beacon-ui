@@ -1,0 +1,49 @@
+@use '../../styles/mixins' as *;
+
+@include host-base;
+
+:host {
+  display: block;
+}
+
+[role='tablist'] {
+  display: flex;
+  gap: var(--bc-space-4);
+  margin-block-end: var(--bc-space-24);
+  border-block-end: 1px solid var(--bc-color-border);
+  overflow-x: auto;
+}
+
+[role='tab'] {
+  position: relative;
+  @include touch-target;
+  padding: 0 var(--bc-space-16);
+  border: 0;
+  background: none;
+  color: var(--bc-color-text-muted);
+  font: 500 var(--bc-text-s) / 1 var(--bc-font-body);
+  cursor: pointer;
+}
+
+[role='tab']:hover {
+  color: var(--bc-color-text);
+}
+
+[role='tab'][aria-selected='true'] {
+  color: var(--bc-color-text);
+  font-weight: 600;
+}
+
+[role='tab'][aria-selected='true']::after {
+  content: '';
+  position: absolute;
+  inset: auto var(--bc-space-8) -1px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--bc-color-accent);
+}
+
+[role='tab']:focus-visible {
+  @include focus-ring(-2px);
+  border-radius: var(--bc-radius-s);
+}
