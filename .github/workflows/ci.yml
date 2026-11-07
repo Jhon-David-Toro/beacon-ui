@@ -37,6 +37,9 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Code metrics (complexity, length, params, nesting per function)
+        run: pnpm metrics
+
       - name: Install Chromium for browser tests
         run: pnpm exec playwright install --with-deps chromium
 
