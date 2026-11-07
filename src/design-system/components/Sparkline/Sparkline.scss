@@ -1,0 +1,42 @@
+@use '../../styles/mixins' as *;
+
+@include tone-variants(":host([tone='&tone&'])");
+
+:host {
+  --tone: var(--bc-color-text);
+  display: inline-block;
+  line-height: 0;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.line,
+.threshold {
+  vector-effect: non-scaling-stroke;
+}
+
+.line {
+  fill: none;
+  stroke: var(--tone);
+  stroke-width: 1.75;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.area {
+  fill: color-mix(in oklab, var(--tone) 14%, transparent);
+}
+
+.threshold {
+  stroke: var(--bc-color-border-strong);
+  stroke-dasharray: 3 3;
+}
+
+.last {
+  fill: var(--tone);
+}
