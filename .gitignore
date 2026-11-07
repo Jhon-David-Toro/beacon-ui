@@ -6,6 +6,8 @@ custom-elements.json
 __screenshots__
 *.log
 .DS_Store
+.vscode/*
+!.vscode/extensions.json
 .env
 .env.*
 !.env.example

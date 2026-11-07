@@ -31,6 +31,7 @@
     "@vitest/browser": "^5.1.0",
     "@vitest/browser-playwright": "^5.1.0",
     "@vitest/coverage-v8": "^5.1.0",
+    "axe-core": "^4.14.0",
     "eslint": "^10.14.0",
     "eslint-plugin-lit": "^2.3.1",
     "eslint-plugin-lit-a11y": "^5.1.3",
@@ -50,5 +51,6 @@
   "description": "Beacon UI: a Web Components design system built with Lit, and the service status console that uses it.",
   "engines": {
     "node": ">=22"
-  }
+  },
+  "customElements": "custom-elements.json"
 }

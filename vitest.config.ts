@@ -18,6 +18,7 @@ export default mergeConfig(
         'lit/directives/style-map.js',
         '@lit/context',
         '@lit/task',
+        'axe-core',
       ],
     },
     test: {
