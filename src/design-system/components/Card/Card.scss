@@ -1,0 +1,40 @@
+@use '../../styles/mixins' as *;
+
+@include host-base;
+
+:host {
+  display: block;
+  border: 1px solid var(--bc-color-border);
+  border-radius: var(--bc-radius-l);
+  background: var(--bc-color-surface);
+}
+
+.card {
+  display: grid;
+  gap: var(--bc-space-16);
+  padding: var(--bc-space-24);
+}
+
+:host([padding='none']) .card {
+  padding: 0;
+}
+
+:host([padding='l']) .card {
+  padding: var(--bc-space-32);
+}
+
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--bc-space-16);
+}
+
+header.empty {
+  display: none;
+}
+
+::slotted([slot='heading']) {
+  margin: 0;
+  font: 600 var(--bc-text-l) / var(--bc-leading-tight) var(--bc-font-display);
+}
