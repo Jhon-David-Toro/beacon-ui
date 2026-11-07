@@ -1,0 +1,42 @@
+@use '../../styles/mixins' as *;
+
+@include host-base;
+@include tone-variants(":host([tone='&tone&'])");
+
+:host {
+  --tone: var(--bc-color-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bc-space-8);
+  padding: var(--bc-space-4) var(--bc-space-12) var(--bc-space-4) var(--bc-space-8);
+  border-radius: var(--bc-radius-pill);
+  background: color-mix(in oklab, var(--tone) 12%, transparent);
+  color: color-mix(in oklab, var(--tone) 70%, var(--bc-color-text));
+  font: 600 var(--bc-text-xs) / 1.4 var(--bc-font-body);
+  white-space: nowrap;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tone);
+
+  :host([pulse]) & {
+    animation: pulse 1.6s var(--bc-ease-out) infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--tone) 60%, transparent);
+  }
+
+  100% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
