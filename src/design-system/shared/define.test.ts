@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { defineElement } from './define'
 
+/** Element registered first under the probe tag. */
 class FirstElement extends HTMLElement {}
+
+/** Element that tries to take the same tag afterwards. */
 class SecondElement extends HTMLElement {}
 
 describe('defineElement', () => {
