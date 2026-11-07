@@ -1,0 +1,149 @@
+@use '../../../design-system/styles/mixins' as *;
+@use '../../styles/layout' as *;
+
+@include view;
+
+.hero {
+  display: grid;
+  gap: var(--bc-space-24);
+}
+
+.headline {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bc-space-16);
+
+  beacon-mark {
+    --beacon-size: clamp(44px, 6vw, 72px);
+    flex: none;
+  }
+}
+
+// The one loud element: the state of everything, in a single sentence.
+.hero h1 {
+  max-width: 16ch;
+  @include type('2xl', 700, 'display', 1);
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.summary {
+  margin: 0;
+  @include muted;
+  @include type('m');
+}
+
+// Every service's last 90 days, stacked: the horizon line of the page.
+.horizon {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px var(--bc-space-12);
+  align-items: center;
+  margin: 0;
+  padding: var(--bc-space-16);
+  border: 1px solid var(--bc-color-border);
+  border-radius: var(--bc-radius-l);
+  background: var(--bc-color-surface);
+
+  @include from('tablet') {
+    gap: 6px var(--bc-space-16);
+    padding: var(--bc-space-24);
+  }
+
+  dt {
+    @include muted;
+    @include type('xs', 500, 'body', 1);
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  bc-uptime-bar {
+    --bc-uptime-height: 14px;
+    --bc-uptime-gap: 1px;
+
+    @include from('tablet') {
+      --bc-uptime-gap: 2px;
+    }
+  }
+}
+
+.axis {
+  display: flex;
+  grid-column: 2;
+  justify-content: space-between;
+  @include muted;
+  @include type('xs');
+}
+
+section + section {
+  margin-block-start: var(--bc-space-48);
+}
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--bc-space-16);
+  margin-block-end: var(--bc-space-16);
+}
+
+.filters {
+  display: grid;
+  gap: var(--bc-space-12);
+  width: 100%;
+
+  @include from('tablet') {
+    grid-template-columns: 18rem 13rem;
+    width: auto;
+  }
+}
+
+.list {
+  @include reset-list;
+  border: 1px solid var(--bc-color-border);
+  border-radius: var(--bc-radius-l);
+  background: var(--bc-color-surface);
+  overflow: hidden;
+
+  li + li {
+    border-block-start: 1px solid var(--bc-color-border);
+  }
+}
+
+.skeleton-row {
+  display: grid;
+  gap: var(--bc-space-8);
+  padding: var(--bc-space-24);
+
+  bc-skeleton:first-child {
+    width: 30%;
+  }
+
+  bc-skeleton:last-child {
+    height: 32px;
+  }
+}
+
+.empty,
+.error {
+  display: grid;
+  justify-items: start;
+  gap: var(--bc-space-12);
+  padding: var(--bc-space-32) var(--bc-space-24);
+
+  p {
+    margin: 0;
+  }
+}
+
+.error p {
+  max-width: 50ch;
+}
+
+.count {
+  @include muted;
+  @include type('s');
+}
