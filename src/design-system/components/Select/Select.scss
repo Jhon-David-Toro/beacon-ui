@@ -1,0 +1,29 @@
+@use '../../styles/mixins' as *;
+@use '../../styles/field' as *;
+
+@include host-base;
+@include field;
+
+.wrapper {
+  position: relative;
+}
+
+select {
+  @include control-box;
+  appearance: none;
+  padding-inline-end: var(--bc-space-32);
+  cursor: pointer;
+}
+
+.chevron {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: var(--bc-space-16);
+  width: 8px;
+  height: 8px;
+  margin-block: auto;
+  border-inline-end: 2px solid var(--bc-color-text-muted);
+  border-block-end: 2px solid var(--bc-color-text-muted);
+  transform: translateY(-25%) rotate(45deg);
+  pointer-events: none;
+}
