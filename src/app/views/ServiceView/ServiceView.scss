@@ -1,0 +1,112 @@
+@use '../../../design-system/styles/mixins' as *;
+@use '../../styles/layout' as *;
+
+@include view;
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bc-space-4);
+  margin-block-end: var(--bc-space-24);
+  @include muted;
+  @include type('s', 500);
+  text-decoration: none;
+}
+
+header {
+  display: grid;
+  gap: var(--bc-space-12);
+  margin-block-end: var(--bc-space-32);
+}
+
+.title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bc-space-12) var(--bc-space-16);
+}
+
+.description {
+  max-width: 60ch;
+  margin: 0;
+  @include muted;
+  @include type('l', 400, 'body', 1.4);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--bc-space-24);
+  margin-block-end: var(--bc-space-48);
+  padding: var(--bc-space-24);
+  border-block: 1px solid var(--bc-color-border);
+
+  @include from('tablet') {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.chart {
+  display: grid;
+  gap: var(--bc-space-8);
+
+  bc-sparkline {
+    width: 100%;
+  }
+}
+
+.axis {
+  display: flex;
+  justify-content: space-between;
+  @include muted;
+  @include type('xs');
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bc-space-8);
+  margin: var(--bc-space-16) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bc-space-16);
+  margin-block-end: var(--bc-space-24);
+
+  p {
+    margin: 0;
+    @include muted;
+    @include type('s');
+  }
+}
+
+.loading {
+  display: grid;
+  gap: var(--bc-space-16);
+
+  bc-skeleton:first-child {
+    width: 40%;
+    height: 2.5rem;
+  }
+
+  bc-skeleton:last-child {
+    height: 12rem;
+  }
+}
+
+.error {
+  display: grid;
+  justify-items: start;
+  gap: var(--bc-space-16);
+
+  p {
+    max-width: 50ch;
+    margin: 0;
+  }
+}
