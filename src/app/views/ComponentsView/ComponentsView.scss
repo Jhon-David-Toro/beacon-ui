@@ -1,0 +1,64 @@
+@use '../../../design-system/styles/mixins' as *;
+@use '../../styles/layout' as *;
+
+@include view;
+
+.intro {
+  max-width: 60ch;
+  margin: var(--bc-space-12) 0 var(--bc-space-48);
+  @include muted;
+  @include type('l', 400, 'body', 1.4);
+}
+
+.grid {
+  display: grid;
+  gap: var(--bc-space-24);
+
+  @include from('tablet') {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.wide {
+  @include from('tablet') {
+    grid-column: 1 / -1;
+  }
+}
+
+code {
+  padding: 2px 6px;
+  border-radius: var(--bc-radius-s);
+  background: var(--bc-color-surface-sunken);
+  color: var(--bc-color-accent-text);
+  font-size: var(--bc-text-xs);
+}
+
+.demo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bc-space-12);
+}
+
+.stack {
+  display: grid;
+  gap: var(--bc-space-16);
+}
+
+p {
+  margin: 0;
+  @include muted;
+  @include type('s');
+}
+
+h2 {
+  font-size: var(--bc-text-m);
+}
+
+bc-sparkline {
+  width: 100%;
+}
+
+.demo bc-stat + bc-stat {
+  margin-inline-start: var(--bc-space-24);
+}
