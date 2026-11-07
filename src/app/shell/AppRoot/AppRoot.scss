@@ -1,0 +1,29 @@
+@use '../../../design-system/styles/mixins' as *;
+
+@include host-base;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+main {
+  flex: 1;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+footer {
+  padding: var(--bc-space-24) var(--bc-space-16);
+  border-block-start: 1px solid var(--bc-color-border);
+  color: var(--bc-color-text-muted);
+  text-align: center;
+  @include type('xs');
+
+  a {
+    color: inherit;
+  }
+}

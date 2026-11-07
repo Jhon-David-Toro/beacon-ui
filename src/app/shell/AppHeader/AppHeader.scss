@@ -1,0 +1,88 @@
+@use '../../../design-system/styles/mixins' as *;
+@use '../../styles/layout' as *;
+
+@include host-base;
+
+:host {
+  display: block;
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 50;
+  border-block-end: 1px solid var(--bc-color-border);
+  background: color-mix(in oklab, var(--bc-color-bg) 88%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.bar {
+  @include container;
+  display: flex;
+  align-items: center;
+  gap: var(--bc-space-4);
+  min-height: 64px;
+
+  @include from('tablet') {
+    gap: var(--bc-space-16);
+  }
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bc-space-8);
+  margin-inline-end: auto;
+  color: inherit;
+  text-decoration: none;
+  @include type('m', 700, 'display', 1);
+  letter-spacing: -0.02em;
+
+  @include from('tablet') {
+    font-size: var(--bc-text-l);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: var(--bc-radius-s);
+  }
+}
+
+nav ul {
+  @include reset-list;
+  display: flex;
+  gap: var(--bc-space-4);
+}
+
+nav a {
+  display: inline-flex;
+  align-items: center;
+  @include touch-target;
+  padding-inline: var(--bc-space-8);
+  border-radius: var(--bc-radius-m);
+  color: var(--bc-color-text-muted);
+
+  @include from('tablet') {
+    padding-inline: var(--bc-space-12);
+  }
+  text-decoration: none;
+  @include type('s', 500, 'body', 1);
+
+  &:hover {
+    color: var(--bc-color-text);
+  }
+
+  &[aria-current='page'] {
+    color: var(--bc-color-text);
+    background: var(--bc-color-surface-sunken);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+}
+
+.report {
+  display: none;
+
+  @include from('tablet') {
+    display: inline-flex;
+  }
+}
