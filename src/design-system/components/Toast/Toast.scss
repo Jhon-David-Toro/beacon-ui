@@ -1,0 +1,45 @@
+@use '../../styles/mixins' as *;
+
+@include host-base;
+@include tone-variants("li[data-tone='&tone&']");
+
+:host {
+  position: fixed;
+  inset: auto var(--bc-space-16) var(--bc-space-16) auto;
+  z-index: 100;
+  width: min(380px, calc(100vw - var(--bc-space-32)));
+}
+
+ol {
+  display: grid;
+  gap: var(--bc-space-8);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  gap: var(--bc-space-12);
+  padding: var(--bc-space-8) var(--bc-space-8) var(--bc-space-8) var(--bc-space-16);
+  border: 1px solid var(--bc-color-border);
+  border-inline-start: 4px solid var(--tone, var(--bc-color-text-muted));
+  border-radius: var(--bc-radius-m);
+  background: var(--bc-color-surface);
+  box-shadow: var(--bc-shadow-overlay);
+  font-size: var(--bc-text-s);
+  animation: enter var(--bc-duration-base) var(--bc-ease-out);
+}
+
+.message {
+  flex: 1;
+  margin: 0;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
