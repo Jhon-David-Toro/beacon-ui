@@ -1,0 +1,83 @@
+@use '../../styles/mixins' as *;
+
+$variants: (
+  primary: (
+    bg: var(--bc-color-primary),
+    fg: var(--bc-color-on-primary),
+    border: transparent,
+    hover-bg: color-mix(in oklab, var(--bc-color-primary) 86%, var(--bc-color-bg)),
+  ),
+  secondary: (
+    bg: var(--bc-color-surface),
+    fg: var(--bc-color-text),
+    border: var(--bc-color-border-strong),
+    hover-bg: var(--bc-color-surface-sunken),
+  ),
+  ghost: (
+    bg: transparent,
+    fg: var(--bc-color-text),
+    border: transparent,
+    hover-bg: var(--bc-color-surface-sunken),
+  ),
+  danger: (
+    bg: var(--bc-color-outage),
+    fg: var(--bc-color-surface),
+    border: transparent,
+    hover-bg: color-mix(in oklab, var(--bc-color-outage) 86%, black),
+  ),
+);
+
+@include host-base;
+@include focus-visible-ring;
+
+:host {
+  display: inline-flex;
+}
+
+.control {
+  @include touch-target;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bc-space-8);
+  padding: 0 var(--bc-space-16);
+  border: 1px solid var(--border);
+  border-radius: var(--bc-radius-m);
+  background: var(--bg);
+  color: var(--fg);
+  font: 600 var(--bc-text-s) / 1 var(--bc-font-body);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--bc-duration-fast) var(--bc-ease-out),
+    transform var(--bc-duration-fast) var(--bc-ease-out);
+
+  &:hover {
+    background: var(--hover-bg);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+@each $name, $tokens in $variants {
+  :host([variant='#{$name}']) .control {
+    @each $prop, $value in $tokens {
+      --#{$prop}: #{$value};
+    }
+  }
+}
+
+:host([size='s']) .control {
+  min-height: 32px;
+  padding: 0 var(--bc-space-12);
+  font-size: var(--bc-text-xs);
+}
+
+:host([disabled]) .control {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
