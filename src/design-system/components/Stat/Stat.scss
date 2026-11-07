@@ -1,0 +1,33 @@
+@use '../../styles/mixins' as *;
+
+@include host-base;
+
+:host {
+  display: block;
+}
+
+dl {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--bc-space-4);
+  margin: 0;
+}
+
+dt {
+  color: var(--bc-color-text-muted);
+  font-size: var(--bc-text-s);
+}
+
+dd {
+  margin: 0;
+  font: 600 var(--bc-text-xl) / 1 var(--bc-font-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.unit {
+  margin-inline-start: 2px;
+  color: var(--bc-color-text-muted);
+  font-size: var(--bc-text-m);
+  font-weight: 500;
+}
