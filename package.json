@@ -16,7 +16,9 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "analyze": "cem analyze",
-    "lint:styles": "stylelint \"src/**/*.scss\""
+    "lint:styles": "stylelint \"src/**/*.scss\"",
+    "metrics": "node scripts/metrics.js",
+    "metrics:report": "node scripts/metrics.js --markdown docs/CODE-METRICS.md"
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.3.0",
@@ -28,13 +30,16 @@
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.11.0",
     "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@vitest/browser": "^5.1.0",
     "@vitest/browser-playwright": "^5.1.0",
     "@vitest/coverage-v8": "^5.1.0",
     "axe-core": "^4.14.0",
     "eslint": "^10.14.0",
+    "eslint-plugin-jsdoc": "^65.4.5",
     "eslint-plugin-lit": "^2.3.1",
     "eslint-plugin-lit-a11y": "^5.1.3",
+    "eslint-plugin-sonarjs": "^4.2.2",
     "eslint-plugin-wc": "^3.1.0",
     "globals": "^17.14.0",
     "playwright": "^1.65.0",
