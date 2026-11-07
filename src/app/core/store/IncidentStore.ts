@@ -9,11 +9,18 @@ import { parseStored, toIncident } from './store.utils'
  * Reports survive a reload through `sessionStorage` when it is available.
  */
 export class IncidentStore {
+  /** Callbacks run after every change. */
   readonly #listeners = new Set<StoreListener>()
+
+  /** Where reports are persisted, or `null` to keep them in memory only. */
   readonly #storage: Storage | null
+
+  /** Reported incidents, newest first. */
   #incidents: Incident[]
 
   /**
+   * Loads any reports saved earlier in this tab.
+   *
    * @param storage - Where to persist reports; pass `null` to keep them in memory only.
    */
   constructor(storage: Storage | null = safeSessionStorage()) {
@@ -21,7 +28,11 @@ export class IncidentStore {
     this.#incidents = parseStored(storage?.getItem(STORAGE_KEY) ?? null)
   }
 
-  /** Every reported incident. */
+  /**
+   * Every reported incident.
+   *
+   * @returns The incidents, newest first.
+   */
   get incidents(): readonly Incident[] {
     return this.#incidents
   }
@@ -30,6 +41,7 @@ export class IncidentStore {
    * Incidents reported for one service.
    *
    * @param serviceId - Service id.
+   * @returns The incidents of that service, newest first.
    */
   forService(serviceId: string): Incident[] {
     return this.#incidents.filter((incident) => incident.serviceId === serviceId)
@@ -45,6 +57,7 @@ export class IncidentStore {
   report(report: IncidentReport, now: Date = new Date()): Incident {
     const incident = toIncident(report, `reported-${crypto.randomUUID()}`, now)
     this.#set([incident, ...this.#incidents])
+
     return incident
   }
 
@@ -69,6 +82,7 @@ export class IncidentStore {
    */
   subscribe(listener: StoreListener): () => void {
     this.#listeners.add(listener)
+
     return () => this.#listeners.delete(listener)
   }
 
@@ -91,7 +105,9 @@ export class IncidentStore {
 }
 
 /**
- * `sessionStorage`, or `null` where reading it throws (sandboxed iframes).
+ * `sessionStorage`, guarded for sandboxed iframes where reading it throws.
+ *
+ * @returns The storage, or `null` when it is not available.
  */
 function safeSessionStorage(): Storage | null {
   try {

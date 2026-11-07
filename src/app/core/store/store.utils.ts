@@ -1,6 +1,7 @@
 import type { Incident, IncidentSeverity } from '../../data'
 import type { IncidentReport } from './store.types'
 
+/** Severities the report form accepts. */
 const SEVERITIES: readonly IncidentSeverity[] = ['degraded', 'outage', 'maintenance']
 
 /**
@@ -9,6 +10,7 @@ const SEVERITIES: readonly IncidentSeverity[] = ['degraded', 'outage', 'maintena
  * already have prevented.
  *
  * @param data - Submitted form data.
+ * @returns The report, or `null` when the data is incomplete.
  */
 export function reportFromFormData(data: FormData): IncidentReport | null {
   const serviceId = data.get('service')
@@ -18,6 +20,7 @@ export function reportFromFormData(data: FormData): IncidentReport | null {
     return null
   }
   const details = data.get('details')
+
   return {
     serviceId,
     title: title.trim(),
@@ -31,6 +34,7 @@ export function reportFromFormData(data: FormData): IncidentReport | null {
  * Whether a form value is a known severity.
  *
  * @param value - Raw form value.
+ * @returns `true` for `degraded`, `outage` or `maintenance`.
  */
 export function isSeverity(value: FormDataEntryValue | null): value is IncidentSeverity {
   return typeof value === 'string' && (SEVERITIES as readonly string[]).includes(value)
@@ -42,6 +46,7 @@ export function isSeverity(value: FormDataEntryValue | null): value is IncidentS
  * @param report - Validated report.
  * @param id - Unique id.
  * @param now - Report time.
+ * @returns The incident, in the `investigating` phase.
  */
 export function toIncident(report: IncidentReport, id: string, now: Date): Incident {
   return {
@@ -60,6 +65,7 @@ export function toIncident(report: IncidentReport, id: string, now: Date): Incid
  * Parses stored incidents, ignoring anything that is not a list.
  *
  * @param raw - Stored JSON, or `null` when nothing is stored.
+ * @returns The stored incidents, or an empty list.
  */
 export function parseStored(raw: string | null): Incident[] {
   if (!raw) {
@@ -67,6 +73,7 @@ export function parseStored(raw: string | null): Incident[] {
   }
   try {
     const parsed: unknown = JSON.parse(raw)
+
     return Array.isArray(parsed) ? (parsed as Incident[]) : []
   } catch {
     return []
@@ -77,6 +84,7 @@ export function parseStored(raw: string | null): Incident[] {
  * Newest incidents first.
  *
  * @param incidents - Incidents in any order.
+ * @returns A new, sorted list.
  */
 export function sortByNewest(incidents: readonly Incident[]): Incident[] {
   return [...incidents].sort((a, b) => b.startedAt.localeCompare(a.startedAt))

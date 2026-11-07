@@ -28,31 +28,45 @@ import { affectedCount, filterServices, overallStatus, summaryLine } from './Ove
  * @tag beacon-overview
  */
 export class OverviewView extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Reactive properties; each one is documented on its field. */
   static override properties = {
     query: { state: true },
     status: { state: true },
   }
 
+  /** Search text of the service filter. */
   declare private query: string
+
+  /** Status filter, or `all`. */
   declare private status: string
 
+  /** Incidents reported from this browser, merged into every service. */
   readonly #store = new StoreController(this)
 
+  /** Loads every service; aborts if the page is left before it answers. */
   readonly #services = new Task(this, {
     task: async (_args: [], { signal }) => fetchServices(signal),
     args: (): [] => [],
   })
 
+  /** When the data was requested, shown under the headline. */
   #checkedAt = new Date()
 
+  /** Sets the defaults. */
   constructor() {
     super()
     this.query = ''
     this.status = ALL_STATUSES
   }
 
+  /**
+   * Renders the loading, error or loaded state of the services request.
+   *
+   * @returns The page template.
+   */
   override render() {
     return html`<div class="container">
       ${this.#services.render({
@@ -67,13 +81,19 @@ export class OverviewView extends LitElement {
    * Services with this browser's reports merged in.
    *
    * @param services - Services from the API.
+   * @returns New service objects with reported incidents merged in.
    */
   #withReports(services: readonly Service[]): Service[] {
     const store = this.#store.store
+
     return services.map((service) => withReports(service, store?.forService(service.id) ?? []))
   }
 
-  /** Placeholder while the first request is in flight. */
+  /**
+   * Placeholder while the first request is in flight.
+   *
+   * @returns The loading template.
+   */
   #renderLoading() {
     return html`<section class="hero" aria-busy="true">
         <h1>Checking every service…</h1>
@@ -89,7 +109,11 @@ export class OverviewView extends LitElement {
       </ul>`
   }
 
-  /** Message and retry button when loading fails. */
+  /**
+   * Message and retry button when loading fails.
+   *
+   * @returns The error template.
+   */
   #renderError() {
     return html`<div class="error" role="alert">
       <h1>Service status could not be loaded.</h1>
@@ -102,6 +126,7 @@ export class OverviewView extends LitElement {
    * Full page once services have loaded.
    *
    * @param services - Services with reports merged in.
+   * @returns The page sections.
    */
   #renderLoaded(services: readonly Service[]) {
     return html`${this.#renderHero(services)} ${this.#renderServices(services)}
@@ -120,6 +145,7 @@ export class OverviewView extends LitElement {
    * Headline and uptime horizon.
    *
    * @param services - Services with reports merged in.
+   * @returns The hero section.
    */
   #renderHero(services: readonly Service[]) {
     return html`<section class="hero" aria-labelledby="headline">
@@ -147,9 +173,11 @@ export class OverviewView extends LitElement {
    * Filter controls and the service list.
    *
    * @param services - Services with reports merged in.
+   * @returns The services section.
    */
   #renderServices(services: readonly Service[]) {
     const visible = filterServices(services, { query: this.query, status: this.status })
+
     return html`<section aria-labelledby="services-title">
       <div class="section-head">
         <h2 id="services-title">Services</h2>
@@ -178,6 +206,7 @@ export class OverviewView extends LitElement {
    * Rows for the visible services.
    *
    * @param services - Filtered services.
+   * @returns The list template.
    */
   #renderList(services: readonly Service[]) {
     return html`<ul class="list">
@@ -189,7 +218,11 @@ export class OverviewView extends LitElement {
     </ul>`
   }
 
-  /** Empty state when the filters hide everything. */
+  /**
+   * Empty state when the filters hide everything.
+   *
+   * @returns The empty state template.
+   */
   #renderEmpty() {
     return html`<div class="list empty">
       <p>No service matches these filters.</p>
@@ -197,12 +230,20 @@ export class OverviewView extends LitElement {
     </div>`
   }
 
-  /** Updates the search text. */
+  /**
+   * Updates the search text.
+   *
+   * @param event - `input` event of the search field.
+   */
   readonly #handleQuery = (event: Event): void => {
     this.query = (event.target as BcTextField).value
   }
 
-  /** Updates the status filter. */
+  /**
+   * Updates the status filter.
+   *
+   * @param event - `change` event of the status filter.
+   */
   readonly #handleStatus = (event: Event): void => {
     this.status = (event.target as BcSelect).value
   }
@@ -219,7 +260,11 @@ export class OverviewView extends LitElement {
     void this.#services.run()
   }
 
-  /** Resolves an incident reported from this browser. */
+  /**
+   * Resolves an incident reported from this browser.
+   *
+   * @param event - `beacon-resolve` event from the incident list.
+   */
   readonly #handleResolve = (event: CustomEvent<{ id: string }>): void => {
     this.#store.store?.resolve(event.detail.id)
   }

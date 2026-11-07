@@ -1,13 +1,20 @@
 import type { IncidentSeed, ServiceSeed } from './services.types'
 
+/** Every status a service can have, from healthy to planned work. */
 export const SERVICE_STATUSES = ['operational', 'degraded', 'outage', 'maintenance'] as const
+/** Incident lifecycle, in order. */
 export const INCIDENT_PHASES = ['investigating', 'identified', 'monitoring', 'resolved'] as const
 
+/** Latency samples per service: one every 30 minutes for 24 hours. */
 export const LATENCY_SAMPLES = 48
+/** Days of uptime history per service. */
 export const UPTIME_DAYS = 90
+/** Latency target in milliseconds, drawn as the dashed line on charts. */
 export const LATENCY_SLO_MS = 250
+/** Simulated network time of the mock API, so loading states are visible. */
 export const MOCK_NETWORK_DELAY_MS = 450
 
+/** The services the console monitors. */
 export const SERVICE_SEEDS: readonly ServiceSeed[] = [
   {
     id: 'api-gateway',
@@ -83,6 +90,7 @@ export const SERVICE_SEEDS: readonly ServiceSeed[] = [
   },
 ]
 
+/** Incidents of the last 90 days. */
 export const INCIDENT_SEEDS: readonly IncidentSeed[] = [
   {
     serviceId: 'notifications',

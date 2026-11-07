@@ -1,30 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import type { Service } from '../../data'
+import { makeService } from '../../../test/factories'
 import { affectedCount, filterServices, overallStatus, regionCount } from './OverviewView.utils'
 
-/**
- * Service with only the fields the filters read.
- *
- * @param overrides - Fields to set.
- */
-function service(overrides: Partial<Service>): Service {
-  return {
-    id: 'x',
-    name: 'X',
-    description: '',
-    region: 'us-east-1',
-    status: 'operational',
-    latency: [],
-    uptime: [],
-    incidents: [],
-    ...overrides,
-  }
-}
-
+/** Three services in different regions and statuses. */
 const services = [
-  service({ id: 'search', name: 'Search', region: 'eu-west-1' }),
-  service({ id: 'checkout', name: 'Checkout', description: 'Payments', status: 'degraded' }),
-  service({ id: 'cdn', name: 'Media CDN', region: 'global', status: 'outage' }),
+  makeService({ id: 'search', name: 'Search', region: 'eu-west-1' }),
+  makeService({
+    id: 'checkout',
+    name: 'Checkout',
+    description: 'Payments',
+    region: 'us-east-1',
+    status: 'degraded',
+  }),
+  makeService({ id: 'cdn', name: 'Media CDN', region: 'global', status: 'outage' }),
 ]
 
 describe('filterServices', () => {

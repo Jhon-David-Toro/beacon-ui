@@ -22,34 +22,52 @@ import styles from './ServiceView.scss?inline'
  * @tag beacon-service
  */
 export class ServiceView extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Reactive properties; each one is documented on its field. */
   static override properties = {
     serviceId: { attribute: 'service-id' },
     pendingResolve: { state: true },
   }
 
-  /** Service id from the URL. */
+  /**
+   * Service id from the URL. Changing it loads the new service.
+   *
+   * @attr service-id
+   * @default ''
+   */
   declare serviceId: string
+
+  /** Incident waiting for confirmation in the resolve dialog. */
   declare private pendingResolve: string | undefined
 
+  /** Incidents reported from this browser. */
   readonly #store = new StoreController(this)
 
+  /** Loads the service for `serviceId`; a new id aborts the previous request. */
   readonly #service = new Task(this, {
     task: async ([id]: [string], { signal }) => {
       const service = await fetchService(id, signal)
       document.title = `${service.name} – Beacon`
+
       return service
     },
     args: () => [this.serviceId] as [string],
   })
 
+  /** Sets the defaults. */
   constructor() {
     super()
     this.serviceId = ''
     this.pendingResolve = undefined
   }
 
+  /**
+   * Renders the back link, the loading, error or loaded state, and the resolve dialog.
+   *
+   * @returns The page template.
+   */
   override render() {
     return html`<div class="container">
       <a class="back" href=${href('/')}
@@ -74,9 +92,11 @@ export class ServiceView extends LitElement {
    * Header, figures and tabs.
    *
    * @param service - Service with reports merged in.
+   * @returns The header, figures and tabs.
    */
   #renderService(service: Service) {
     const open = service.incidents.filter(isOpen).length
+
     return html`<header>
         <div class="title-row">
           <h1>${service.name}</h1>
@@ -112,6 +132,7 @@ export class ServiceView extends LitElement {
    * Latency chart with the SLO line.
    *
    * @param service - Service to chart.
+   * @returns The latency panel content.
    */
   #renderLatency(service: Service) {
     return html`<div class="panel-head">
@@ -137,6 +158,7 @@ export class ServiceView extends LitElement {
    * Uptime bar and its legend.
    *
    * @param service - Service to chart.
+   * @returns The uptime panel content.
    */
   #renderUptime(service: Service) {
     return html`<div class="panel-head"><h2>Daily uptime, last 90 days</h2></div>
@@ -152,6 +174,7 @@ export class ServiceView extends LitElement {
    * Incident timeline and report button.
    *
    * @param service - Service whose incidents are listed.
+   * @returns The incidents panel content.
    */
   #renderIncidents(service: Service) {
     return html`<div class="panel-head">
@@ -171,6 +194,7 @@ export class ServiceView extends LitElement {
    * Not-found or generic failure message.
    *
    * @param error - Error thrown by the task.
+   * @returns The error template.
    */
   #renderError(error: unknown) {
     if (error instanceof ServiceNotFoundError) {
@@ -180,6 +204,7 @@ export class ServiceView extends LitElement {
         <bc-button variant="primary" href=${href('/')}>See all services</bc-button>
       </div>`
     }
+
     return html`<div class="error" role="alert">
       <h1>This service could not be loaded.</h1>
       <p>The status API did not answer. Check your connection, then try again.</p>
@@ -187,7 +212,11 @@ export class ServiceView extends LitElement {
     </div>`
   }
 
-  /** Confirmation dialog for resolving a reported incident. */
+  /**
+   * Confirmation dialog for resolving a reported incident.
+   *
+   * @returns The dialog template.
+   */
   #renderResolveDialog() {
     return html`<bc-dialog
       heading="Mark this incident resolved?"
@@ -202,7 +231,11 @@ export class ServiceView extends LitElement {
     </bc-dialog>`
   }
 
-  /** Opens the confirmation for the incident whose button was pressed. */
+  /**
+   * Opens the confirmation for the incident whose button was pressed.
+   *
+   * @param event - `beacon-resolve` event from the incident list.
+   */
   readonly #askToResolve = (event: CustomEvent<{ id: string }>): void => {
     this.pendingResolve = event.detail.id
   }

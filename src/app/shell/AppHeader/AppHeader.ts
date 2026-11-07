@@ -17,28 +17,47 @@ import styles from './AppHeader.scss?inline'
  * @tag beacon-header
  */
 export class AppHeader extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Reactive properties; each one is documented on its field. */
   static override properties = {
     route: {},
     status: {},
   }
 
-  /** Current route, to mark the active link. */
+  /**
+   * Current route, to mark the active link with `aria-current`.
+   *
+   * @default 'overview'
+   */
   declare route: RouteName
-  /** Worst status right now, shown on the brand mark. */
+
+  /**
+   * Worst status right now, shown on the brand mark.
+   *
+   * @default 'operational'
+   */
   declare status: ServiceStatus
 
+  /** Owns the light/dark theme and its toggle. */
   readonly #theme = new ThemeController(this)
 
+  /** Sets the defaults. */
   constructor() {
     super()
     this.route = 'overview'
     this.status = 'operational'
   }
 
+  /**
+   * Renders the brand, navigation, report button and theme toggle.
+   *
+   * @returns The header template.
+   */
   override render() {
     const dark = this.#theme.theme === 'dark'
+
     return html`<header class="bar">
       <a class="brand" href=${href('/')}>
         <beacon-mark status=${this.status}></beacon-mark>

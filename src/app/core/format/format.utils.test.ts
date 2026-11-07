@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { formatRelative, headline, percentile, sparklineTone, worstStatus } from './format.utils'
 
+/** Fixed "now" so relative times are stable. */
 const now = new Date('2026-11-07T12:00:00Z')
 
 describe('formatRelative', () => {

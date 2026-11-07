@@ -3,6 +3,7 @@ import { IncidentStore } from './IncidentStore'
 import { STORAGE_KEY } from './store.constants'
 import type { IncidentReport } from './store.types'
 
+/** A valid report used by every test. */
 const report: IncidentReport = {
   serviceId: 'search',
   title: 'Search results are slow',
@@ -13,9 +14,12 @@ const report: IncidentReport = {
 
 /**
  * In-memory Storage stand-in.
+ *
+ * @returns A `Storage` backed by a `Map`.
  */
 function memoryStorage(): Storage {
   const data = new Map<string, string>()
+
   return {
     get length() {
       return data.size

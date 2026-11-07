@@ -1,36 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import type { Incident, Service } from '../../data'
+import { makeIncident as incident, makeService } from '../../../test/factories'
 import { effectiveStatus, openFirst, withReports } from './status.utils'
 
-const service = {
-  id: 'search',
-  name: 'Search',
-  description: '',
-  region: 'eu-west-1',
-  status: 'operational',
-  latency: [],
-  uptime: [],
-  incidents: [],
-} satisfies Service
-
-/**
- * Incident with defaults for the fields a test does not care about.
- *
- * @param overrides - Fields to set.
- */
-function incident(overrides: Partial<Incident>): Incident {
-  return {
-    id: 'i',
-    serviceId: 'search',
-    title: 't',
-    details: '',
-    severity: 'degraded',
-    phase: 'investigating',
-    startedAt: '2026-11-07T10:00:00Z',
-    reportedByYou: true,
-    ...overrides,
-  }
-}
+/** Operational service the reports are applied to. */
+const service = makeService()
 
 describe('effectiveStatus', () => {
   it('worsens the status with an open report', () => {

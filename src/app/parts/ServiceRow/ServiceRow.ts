@@ -16,25 +16,39 @@ import styles from './ServiceRow.scss?inline'
  * @tag beacon-service-row
  */
 export class ServiceRow extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Reactive properties; each one is documented on its field. */
   static override properties = {
     service: { attribute: false },
   }
 
+  /**
+   * Service to show. Nothing renders until it is set.
+   *
+   * @default undefined
+   */
   declare service: Service | undefined
 
+  /** Sets the defaults. */
   constructor() {
     super()
     this.service = undefined
   }
 
+  /**
+   * Renders the row as a single link to the service page.
+   *
+   * @returns The row template.
+   */
   override render() {
     const service = this.service
     if (!service) {
       return html``
     }
     const p95 = percentile(service.latency, 95)
+
     return html`<a href=${href(`/services/${service.id}`)}>
       <span class="name">
         <span class="title">${service.name}</span>

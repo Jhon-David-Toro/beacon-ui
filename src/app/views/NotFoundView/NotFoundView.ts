@@ -11,8 +11,14 @@ import styles from './NotFoundView.scss?inline'
  * @tag beacon-not-found
  */
 export class NotFoundView extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /**
+   * Renders the message and a link back to the overview.
+   *
+   * @returns The page template.
+   */
   override render() {
     return html`<div class="container">
       <h1>This page does not exist.</h1>

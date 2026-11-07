@@ -24,20 +24,38 @@ import type { ResolveDetail } from './IncidentList.types'
  * @fires beacon-resolve - When "Mark resolved" is pressed. `detail.id` is the incident.
  */
 export class IncidentList extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Reactive properties; each one is documented on its field. */
   static override properties = {
     incidents: { attribute: false },
     serviceNames: { attribute: false },
     empty: {},
   }
 
+  /**
+   * Incidents to list, in display order.
+   *
+   * @default []
+   */
   declare incidents: readonly Incident[]
-  /** Service names by id. When set, each incident links to its service. */
+
+  /**
+   * Service names by id. When set, each incident links to its service.
+   *
+   * @default undefined
+   */
   declare serviceNames: ReadonlyMap<string, string> | undefined
-  /** Text shown when there are no incidents. */
+
+  /**
+   * Text shown when there are no incidents.
+   *
+   * @default 'No incidents.'
+   */
   declare empty: string
 
+  /** Sets the defaults. */
   constructor() {
     super()
     this.incidents = []
@@ -45,10 +63,16 @@ export class IncidentList extends LitElement {
     this.empty = 'No incidents.'
   }
 
+  /**
+   * Renders the timeline, or the empty text.
+   *
+   * @returns The list template.
+   */
   override render() {
     if (this.incidents.length === 0) {
       return html`<p class="empty">${this.empty}</p>`
     }
+
     return html`<ol>
       ${repeat(
         this.incidents,
@@ -62,9 +86,11 @@ export class IncidentList extends LitElement {
    * One timeline entry.
    *
    * @param incident - Incident to render.
+   * @returns The list item template.
    */
   #renderIncident(incident: Incident) {
     const resolved = incident.phase === 'resolved'
+
     return html`<li data-tone=${STATUS_TONES[incident.severity]} data-phase=${incident.phase}>
       <span class="node" aria-hidden="true"></span>
       <div class="heading">
@@ -88,12 +114,14 @@ export class IncidentList extends LitElement {
    * Link to the incident's service, when names are known.
    *
    * @param incident - Incident being rendered.
+   * @returns The service link, or `nothing` without names.
    */
   #renderService(incident: Incident) {
     const name = this.serviceNames?.get(incident.serviceId)
     if (!name) {
       return nothing
     }
+
     return html`<a href=${href(`/services/${incident.serviceId}`)}>${name}</a>. `
   }
 
@@ -101,6 +129,7 @@ export class IncidentList extends LitElement {
    * Resolve action for incidents reported from this browser.
    *
    * @param incident - Incident being rendered.
+   * @returns The resolve button template.
    */
   #renderResolve(incident: Incident) {
     return html`<div class="actions">
@@ -110,7 +139,11 @@ export class IncidentList extends LitElement {
     </div>`
   }
 
-  /** Asks the owner to resolve the incident. */
+  /**
+   * Asks the owner to resolve the incident.
+   *
+   * @param event - Click on a "Mark resolved" button.
+   */
   readonly #handleResolve = (event: Event): void => {
     const id = (event.currentTarget as HTMLElement).dataset.id ?? ''
     this.dispatchEvent(

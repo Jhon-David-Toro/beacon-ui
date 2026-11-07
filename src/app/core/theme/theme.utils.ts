@@ -5,6 +5,7 @@ import type { Theme } from './theme.types'
  * Whether a stored value is a known theme.
  *
  * @param value - Raw stored value.
+ * @returns `true` for `light` or `dark`.
  */
 export function isTheme(value: string | null): value is Theme {
   return value !== null && (THEMES as readonly string[]).includes(value)
@@ -15,16 +16,20 @@ export function isTheme(value: string | null): value is Theme {
  *
  * @param stored - Value saved in localStorage.
  * @param prefersDark - Result of `prefers-color-scheme: dark`.
+ * @returns The theme to apply.
  */
 export function initialTheme(stored: string | null, prefersDark: boolean): Theme {
   if (isTheme(stored)) {
     return stored
   }
+
   return prefersDark ? 'dark' : 'light'
 }
 
 /**
  * Reads the saved theme without throwing where storage is blocked.
+ *
+ * @returns The stored value, or `null`.
  */
 export function readStoredTheme(): string | null {
   try {
@@ -66,6 +71,7 @@ export function withViewTransition(change: () => void): void {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   if (reduced || !('startViewTransition' in document)) {
     change()
+
     return
   }
   document.startViewTransition(change)

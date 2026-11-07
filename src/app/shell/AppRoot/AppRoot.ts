@@ -24,23 +24,36 @@ import { documentTitle } from './AppRoot.utils'
  * @tag beacon-app
  */
 export class AppRoot extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Resolves the route from the URL and re-renders on navigation. */
   readonly #router = new Router(this, (route) => {
     this.#afterNavigation(route)
   })
 
+  /**
+   * Provides the store to the views and listens for toast requests.
+   *
+   * @param store - Incident store; tests pass one without storage.
+   */
   constructor(store: IncidentStore = new IncidentStore()) {
     super()
     new ContextProvider(this, { context: incidentStoreContext, initialValue: store })
     this.addEventListener(NOTIFY_EVENT, this.#handleNotify)
   }
 
+  /** Sets the document title for the first page. */
   override connectedCallback(): void {
     super.connectedCallback()
     document.title = documentTitle(this.#router.route.name)
   }
 
+  /**
+   * Renders the header, the current view, the footer and the toast region.
+   *
+   * @returns The shell template.
+   */
   override render() {
     return html`<beacon-header route=${this.#router.route.name}></beacon-header>
       <main id="main" tabindex="-1">${this.#renderView(this.#router.route)}</main>
@@ -55,6 +68,7 @@ export class AppRoot extends LitElement {
    * View element for a route.
    *
    * @param route - Current route.
+   * @returns The view element for that route.
    */
   #renderView(route: Route) {
     switch (route.name) {
@@ -86,7 +100,11 @@ export class AppRoot extends LitElement {
     })
   }
 
-  /** Shows the toast a view asked for. */
+  /**
+   * Shows the toast a view asked for.
+   *
+   * @param event - `beacon-notify` event from a view.
+   */
   readonly #handleNotify = (event: CustomEvent<ToastOptions>): void => {
     this.renderRoot.querySelector<BcToastRegion>('bc-toast-region')?.show(event.detail)
   }

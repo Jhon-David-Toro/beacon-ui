@@ -13,11 +13,15 @@ import {
  * same choice before first paint, so this controller never causes a flash.
  */
 export class ThemeController implements ReactiveController {
+  /** Theme in use. */
   theme: Theme
 
+  /** Element that renders the toggle. */
   readonly #host: ReactiveControllerHost
 
   /**
+   * Picks the saved or system theme and attaches to the host.
+   *
    * @param host - Element that renders the toggle.
    */
   constructor(host: ReactiveControllerHost) {
@@ -29,6 +33,7 @@ export class ThemeController implements ReactiveController {
     host.addController(this)
   }
 
+  /** Applies the theme when the host connects. */
   hostConnected(): void {
     applyTheme(this.theme)
   }

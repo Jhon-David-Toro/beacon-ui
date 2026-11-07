@@ -5,10 +5,12 @@ import type { Route, RouteDefinition } from './router.types'
  * Splits a hash such as `#/services/search?tab=1` into path and query.
  *
  * @param hash - `location.hash`, with or without the leading `#`.
+ * @returns The normalised path and the parsed query.
  */
 export function parseHash(hash: string): { path: string; query: URLSearchParams } {
   const raw = hash.replace(/^#/, '') || '/'
   const [path = '/', search = ''] = raw.split('?')
+
   return { path: normalisePath(path), query: new URLSearchParams(search) }
 }
 
@@ -16,9 +18,11 @@ export function parseHash(hash: string): { path: string; query: URLSearchParams 
  * Removes a trailing slash so `/report/` and `/report` match the same route.
  *
  * @param path - URL path.
+ * @returns The path with one leading slash and no trailing slash.
  */
 export function normalisePath(path: string): string {
   const withSlash = path.startsWith('/') ? path : `/${path}`
+
   return withSlash.length > 1 ? withSlash.replace(/\/+$/, '') : withSlash
 }
 
@@ -44,6 +48,7 @@ export function matchPattern(pattern: string, path: string): Record<string, stri
       return null
     }
   }
+
   return params
 }
 
@@ -52,6 +57,7 @@ export function matchPattern(pattern: string, path: string): Record<string, stri
  *
  * @param hash - `location.hash`.
  * @param routes - Route table.
+ * @returns The matched route, or `not-found`.
  */
 export function resolveRoute(hash: string, routes: readonly RouteDefinition[] = ROUTES): Route {
   const { path, query } = parseHash(hash)
@@ -61,6 +67,7 @@ export function resolveRoute(hash: string, routes: readonly RouteDefinition[] = 
       return { name: route.name, params, query }
     }
   }
+
   return { name: 'not-found', params: {}, query }
 }
 
@@ -69,8 +76,10 @@ export function resolveRoute(hash: string, routes: readonly RouteDefinition[] = 
  *
  * @param path - App path, e.g. `/services/search`.
  * @param query - Optional query parameters.
+ * @returns A hash link such as `#/report?service=auth`.
  */
 export function href(path: string, query?: Record<string, string>): string {
   const search = query ? `?${new URLSearchParams(query).toString()}` : ''
+
   return `#${path}${search}`
 }

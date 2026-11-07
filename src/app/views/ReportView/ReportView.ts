@@ -23,22 +23,36 @@ import { preselectedService, serviceName } from './ReportView.utils'
  * @tag beacon-report
  */
 export class ReportView extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Reactive properties; each one is documented on its field. */
   static override properties = {
     serviceId: { attribute: 'service-id' },
   }
 
-  /** Service to preselect, from `?service=` in the URL. */
+  /**
+   * Service to preselect, from `?service=` in the URL.
+   *
+   * @attr service-id
+   * @default ''
+   */
   declare serviceId: string
 
+  /** Where the report is stored. */
   readonly #store = new StoreController(this)
 
+  /** Sets the defaults. */
   constructor() {
     super()
     this.serviceId = ''
   }
 
+  /**
+   * Renders the form next to the "after you report" notes.
+   *
+   * @returns The page template.
+   */
   override render() {
     return html`<div class="container layout">
       <div>
@@ -46,67 +60,88 @@ export class ReportView extends LitElement {
         <p class="intro">
           Tell the on-call team what is broken. The report shows on the service page straight away.
         </p>
-        <form novalidate @submit=${this.#handleSubmit}>
-          <div class="pair">
-            <bc-select
-              name="service"
-              label="Service"
-              placeholder="Choose a service"
-              .options=${SERVICE_OPTIONS}
-              value=${preselectedService(this.serviceId)}
-              required
-            ></bc-select>
-            <bc-select
-              name="severity"
-              label="Impact"
-              .options=${SEVERITY_OPTIONS}
-              value="degraded"
-              required
-            ></bc-select>
-          </div>
-          <bc-text-field
-            name="title"
-            label="What is happening"
-            placeholder="Checkout returns 500 errors"
-            minlength=${TITLE_MIN_LENGTH}
-            maxlength=${TITLE_MAX_LENGTH}
-            hint="One line, written for customers."
-            required
-          ></bc-text-field>
-          <bc-text-field
-            name="details"
-            label="Details"
-            maxlength=${DETAILS_MAX_LENGTH}
-            hint="What users see, since when, and any workaround."
-            multiline
-          ></bc-text-field>
-          <bc-switch name="notify" checked>Email status subscribers</bc-switch>
-          <div class="actions">
-            <bc-button type="submit" variant="primary">Report incident</bc-button>
-            <bc-button type="reset" variant="ghost">Clear form</bc-button>
-          </div>
-        </form>
+        ${this.#renderForm()}
       </div>
-      <aside aria-labelledby="next-title">
-        <h2 id="next-title">After you report</h2>
-        <ol>
-          <li>The service status changes to match the impact you chose.</li>
-          <li>The incident opens as “Investigating” on the service page.</li>
-          <li>Mark it resolved from there once the fix is confirmed.</li>
-        </ol>
-      </aside>
+      ${this.#renderAside()}
     </div>`
+  }
+
+  /**
+   * The report form.
+   *
+   * @returns The form template.
+   */
+  #renderForm() {
+    return html`<form novalidate @submit=${this.#handleSubmit}>
+      <div class="pair">
+        <bc-select
+          name="service"
+          label="Service"
+          placeholder="Choose a service"
+          .options=${SERVICE_OPTIONS}
+          value=${preselectedService(this.serviceId)}
+          required
+        ></bc-select>
+        <bc-select
+          name="severity"
+          label="Impact"
+          .options=${SEVERITY_OPTIONS}
+          value="degraded"
+          required
+        ></bc-select>
+      </div>
+      <bc-text-field
+        name="title"
+        label="What is happening"
+        placeholder="Checkout returns 500 errors"
+        minlength=${TITLE_MIN_LENGTH}
+        maxlength=${TITLE_MAX_LENGTH}
+        hint="One line, written for customers."
+        required
+      ></bc-text-field>
+      <bc-text-field
+        name="details"
+        label="Details"
+        maxlength=${DETAILS_MAX_LENGTH}
+        hint="What users see, since when, and any workaround."
+        multiline
+      ></bc-text-field>
+      <bc-switch name="notify" checked>Email status subscribers</bc-switch>
+      <div class="actions">
+        <bc-button type="submit" variant="primary">Report incident</bc-button>
+        <bc-button type="reset" variant="ghost">Clear form</bc-button>
+      </div>
+    </form>`
+  }
+
+  /**
+   * What happens after a report, as a short sequence.
+   *
+   * @returns The aside template.
+   */
+  #renderAside() {
+    return html`<aside aria-labelledby="next-title">
+      <h2 id="next-title">After you report</h2>
+      <ol>
+        <li>The service status changes to match the impact you chose.</li>
+        <li>The incident opens as “Investigating” on the service page.</li>
+        <li>Mark it resolved from there once the fix is confirmed.</li>
+      </ol>
+    </aside>`
   }
 
   /**
    * Stores the report, confirms it and opens the service page. Invalid
    * controls show their own inline errors, and focus moves to the first one.
+   *
+   * @param event - `submit` event of the form.
    */
   readonly #handleSubmit = (event: SubmitEvent): void => {
     event.preventDefault()
     const form = event.currentTarget as HTMLFormElement
     if (!form.checkValidity()) {
       form.querySelector<HTMLElement>(':invalid')?.focus()
+
       return
     }
     const report = reportFromFormData(new FormData(form))

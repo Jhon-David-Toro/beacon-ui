@@ -13,10 +13,17 @@ import { demoUptime } from './ComponentsView.utils'
  * @tag beacon-components
  */
 export class ComponentsView extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Sample uptime for the uptime bar demo. */
   readonly #uptime = demoUptime()
 
+  /**
+   * Renders the intro and one card per component group.
+   *
+   * @returns The page template.
+   */
   override render() {
     return html`<div class="container">
       <h1>Components</h1>
@@ -31,7 +38,11 @@ export class ComponentsView extends LitElement {
     </div>`
   }
 
-  /** Buttons. */
+  /**
+   * Buttons.
+   *
+   * @returns The button card.
+   */
   #renderActions() {
     return html`<bc-card>
       <h2 slot="heading">Button</h2>
@@ -47,7 +58,11 @@ export class ComponentsView extends LitElement {
     </bc-card>`
   }
 
-  /** Badges and stats. */
+  /**
+   * Badges and stats.
+   *
+   * @returns The badge and stat card.
+   */
   #renderStatus() {
     return html`<bc-card>
       <h2 slot="heading">Badge and stat</h2>
@@ -65,7 +80,11 @@ export class ComponentsView extends LitElement {
     </bc-card>`
   }
 
-  /** Charts and tabs. */
+  /**
+   * Charts and tabs.
+   *
+   * @returns The charts and tabs card.
+   */
   #renderData() {
     return html`<bc-card class="wide">
       <h2 slot="heading">Sparkline, uptime bar and tabs</h2>
@@ -94,7 +113,11 @@ export class ComponentsView extends LitElement {
     </bc-card>`
   }
 
-  /** Form controls. */
+  /**
+   * Form controls.
+   *
+   * @returns The form controls card.
+   */
   #renderForm() {
     return html`<bc-card>
       <h2 slot="heading">Form controls</h2>
@@ -108,7 +131,11 @@ export class ComponentsView extends LitElement {
     </bc-card>`
   }
 
-  /** Dialog and toast. */
+  /**
+   * Dialog and toast.
+   *
+   * @returns The dialog and toast card.
+   */
   #renderOverlays() {
     return html`<bc-card>
       <h2 slot="heading">Dialog and toast</h2>
@@ -128,23 +155,35 @@ export class ComponentsView extends LitElement {
     </bc-card>`
   }
 
-  /** The gallery's dialog. */
+  /**
+   * The gallery's dialog.
+   *
+   * @returns The dialog, or `null` before the first render.
+   */
   get #dialog(): BcDialog | null {
     return this.renderRoot.querySelector('bc-dialog')
   }
 
+  /** Opens the demo dialog. */
   readonly #openDialog = (): void => {
     this.#dialog?.show()
   }
 
+  /** Closes the demo dialog. */
   readonly #closeDialog = (): void => {
     this.#dialog?.close()
   }
 
+  /** Shows a demo toast through the app shell. */
   readonly #showToast = (): void => {
     notify(this, { message: 'Alerts paused for one hour.', tone: 'success' })
   }
 
+  /**
+   * Keeps the demo form from submitting.
+   *
+   * @param event - `submit` event of the demo form.
+   */
   readonly #preventSubmit = (event: Event): void => {
     event.preventDefault()
   }

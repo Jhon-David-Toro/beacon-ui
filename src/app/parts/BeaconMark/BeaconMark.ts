@@ -12,23 +12,41 @@ import styles from './BeaconMark.scss?inline'
  * @cssprop --beacon-size - Width and height. Defaults to 28px.
  */
 export class BeaconMark extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Reactive properties; each one is documented on its field. */
   static override properties = {
     status: { reflect: true },
     signal: { type: Boolean, reflect: true },
   }
 
+  /**
+   * Status whose colour the lamp takes.
+   *
+   * @default 'operational'
+   */
   declare status: ServiceStatus
-  /** Plays the radiating rings once. */
+
+  /**
+   * Plays the radiating rings once, on load.
+   *
+   * @default false
+   */
   declare signal: boolean
 
+  /** Sets the defaults. */
   constructor() {
     super()
     this.status = 'operational'
     this.signal = false
   }
 
+  /**
+   * Renders the lighthouse SVG.
+   *
+   * @returns The logo template.
+   */
   override render() {
     return html`<svg viewBox="0 0 32 32" aria-hidden="true">
       ${svg`

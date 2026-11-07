@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { LATENCY_SAMPLES, SERVICE_SEEDS, UPTIME_DAYS } from './services.constants'
 import { buildServices } from './services.mock'
 
+/** Fixed "now" so generated dates are stable. */
 const now = new Date('2026-11-07T12:00:00Z')
 
 describe('buildServices', () => {

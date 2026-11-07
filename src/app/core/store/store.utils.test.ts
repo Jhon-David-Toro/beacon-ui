@@ -6,12 +6,14 @@ import type { Incident } from '../../data'
  * FormData from plain entries.
  *
  * @param entries - Field names and values.
+ * @returns A `FormData` with one entry per key.
  */
 function formData(entries: Record<string, string>): FormData {
   const data = new FormData()
   Object.entries(entries).forEach(([key, value]) => {
     data.append(key, value)
   })
+
   return data
 }
 

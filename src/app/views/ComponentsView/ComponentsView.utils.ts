@@ -2,6 +2,8 @@ import type { UptimeDay } from '../../../design-system'
 
 /**
  * Thirty days of sample uptime with two bad days, for the gallery.
+ *
+ * @returns Thirty daily records for October 2026.
  */
 export function demoUptime(): UptimeDay[] {
   return Array.from({ length: 30 }, (_, index) => ({

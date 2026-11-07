@@ -7,12 +7,18 @@ import { resolveRoute } from './router.utils'
  * server rewrites, so the build works as-is on GitHub Pages or any CDN.
  */
 export class Router implements ReactiveController {
+  /** The route the app is on; updated on every `hashchange`. */
   route: Route
 
+  /** Element that re-renders on navigation. */
   readonly #host: ReactiveControllerHost
+
+  /** Callback run after every navigation. */
   readonly #onChange: (route: Route) => void
 
   /**
+   * Resolves the current route and attaches to the host.
+   *
    * @param host - Element that re-renders on navigation.
    * @param onChange - Called after every navigation, e.g. to move focus.
    */
@@ -23,10 +29,12 @@ export class Router implements ReactiveController {
     host.addController(this)
   }
 
+  /** Starts listening for navigation when the host connects. */
   hostConnected(): void {
     window.addEventListener('hashchange', this.#handleHashChange)
   }
 
+  /** Stops listening when the host disconnects. */
   hostDisconnected(): void {
     window.removeEventListener('hashchange', this.#handleHashChange)
   }
