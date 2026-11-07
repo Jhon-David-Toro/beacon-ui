@@ -1,0 +1,24 @@
+@use '../../styles/mixins' as *;
+@use '../../styles/field' as *;
+
+@include host-base;
+@include field;
+
+input,
+textarea {
+  @include control-box;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 6rem;
+  line-height: var(--bc-leading-body);
+}
+
+.count {
+  justify-self: end;
+  margin-block-start: calc(var(--bc-space-4) * -1);
+  color: var(--bc-color-text-muted);
+  @include type('xs');
+  font-variant-numeric: tabular-nums;
+}
