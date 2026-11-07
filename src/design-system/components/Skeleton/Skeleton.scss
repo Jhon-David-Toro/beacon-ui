@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  height: 1em;
+  border-radius: var(--bc-radius-s);
+  background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--bc-color-surface) 70%, transparent),
+      transparent
+    )
+    var(--bc-color-surface-sunken);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host {
+    animation: none;
+  }
+}
