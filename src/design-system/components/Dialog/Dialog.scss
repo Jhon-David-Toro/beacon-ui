@@ -1,0 +1,63 @@
+@use '../../styles/mixins' as *;
+
+@include host-base;
+@include focus-visible-ring;
+
+dialog {
+  width: min(560px, calc(100vw - var(--bc-space-32)));
+  max-height: calc(100dvh - var(--bc-space-48));
+  padding: 0;
+  border: 1px solid var(--bc-color-border);
+  border-radius: var(--bc-radius-l);
+  background: var(--bc-color-surface);
+  color: var(--bc-color-text);
+  box-shadow: var(--bc-shadow-overlay);
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity var(--bc-duration-base) var(--bc-ease-out),
+    transform var(--bc-duration-base) var(--bc-ease-out),
+    overlay var(--bc-duration-base) allow-discrete,
+    display var(--bc-duration-base) allow-discrete;
+}
+
+dialog[open] {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  dialog[open] {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+dialog::backdrop {
+  background: rgb(14 23 41 / 45%);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bc-space-16);
+  padding: var(--bc-space-16) var(--bc-space-16) 0 var(--bc-space-24);
+}
+
+h2 {
+  margin: 0;
+  font: 600 var(--bc-text-l) / var(--bc-leading-tight) var(--bc-font-display);
+}
+
+.body {
+  padding: var(--bc-space-16) var(--bc-space-24);
+  line-height: var(--bc-leading-body);
+}
+
+footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--bc-space-8);
+  padding: 0 var(--bc-space-24) var(--bc-space-24);
+}
