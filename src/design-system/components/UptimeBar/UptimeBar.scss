@@ -1,0 +1,45 @@
+@use '../../styles/mixins' as *;
+
+$levels: (
+  healthy: var(--bc-color-operational),
+  degraded: var(--bc-color-degraded),
+  down: var(--bc-color-outage),
+  empty: var(--bc-color-empty),
+);
+
+@include host-base;
+
+:host {
+  display: block;
+}
+
+.visually-hidden {
+  @include visually-hidden;
+}
+
+.bar {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  height: var(--bc-uptime-height, 32px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.day {
+  flex: 1 1 0;
+  min-width: 2px;
+  border-radius: 2px;
+  transition: transform var(--bc-duration-fast) var(--bc-ease-out);
+
+  &:hover {
+    transform: scaleY(1.15);
+  }
+
+  @each $level, $color in $levels {
+    &[data-level='#{$level}'] {
+      background: $color;
+    }
+  }
+}
