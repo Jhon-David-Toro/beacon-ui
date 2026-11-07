@@ -27,7 +27,7 @@ Every element registers itself through `defineElement`, which ignores a second r
 
 ## Forms: the platform does the work
 
-`FormControl` is an abstract base class around `ElementInternals`. Subclasses only answer three questions: what is my value (`formValue`), how do I reset (`resetValue`), and am I valid (`syncValidity`, which mirrors the inner native control's `ValidityState`). The browser then handles `FormData`, `:invalid`, `checkValidity()`, form reset and `<fieldset disabled>`.
+`FormControl` is an abstract base class around `ElementInternals`, and `ValueControl` extends it for string-valued controls (label, hint, placeholder, initial value and reset), which `bc-text-field` and `bc-select` share instead of duplicating. Subclasses only answer three questions: what is my value (`formValue`), how do I reset (`resetValue`), and am I valid (`syncValidity`, which mirrors the inner native control's `ValidityState`). The browser then handles `FormData`, `:invalid`, `checkValidity()`, form reset and `<fieldset disabled>`.
 
 Errors become visible after the first blur, or when the form is submitted (the `invalid` event), never on the first keystroke.
 
@@ -46,6 +46,10 @@ Each view owns its requests through `Task`. Changing the task arguments (for exa
 ## Deterministic mock data
 
 `services.mock.ts` builds every chart from a seeded generator (mulberry32). The same seed always yields the same latency and uptime, which keeps screenshots stable and lets tests assert exact values. Dates are relative to "now", so the data never looks stale.
+
+## Documentation and metrics as build rules
+
+Documentation and code metrics are lint rules, not guidelines, so they cannot drift. `eslint-plugin-jsdoc` requires a described JSDoc block on every declaration, property, type and constant, plus `@param`, `@returns` and `@throws` where they apply. The metric limits (complexity, cognitive complexity, length, parameters, nesting, statements) live in `metrics.config.js`, read both by ESLint and by `scripts/metrics.js`, which prints the numbers per function and fails CI on any violation.
 
 ## Testing strategy
 

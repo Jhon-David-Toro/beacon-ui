@@ -18,6 +18,7 @@ A design system of framework-agnostic **Web Components built with Lit 3**, and t
 - [Design system](#design-system)
 - [Project structure](#project-structure)
 - [Conventions](#conventions)
+- [Documentation and code metrics](#documentation-and-code-metrics)
 - [Testing and quality](#testing-and-quality)
 - [Accessibility](#accessibility)
 - [Deployment](#deployment)
@@ -67,7 +68,7 @@ Open <http://localhost:5173>. No environment variables are needed.
 | `pnpm test:coverage`           | Same, with coverage and thresholds (90 % lines) |
 | `pnpm analyze`                 | Generates `custom-elements.json`                |
 
-Before finishing any change, run `lint`, `typecheck`, `test` and `build`.
+Before finishing any change, run `lint`, `typecheck`, `metrics`, `test` and `build`.
 
 ## What is in the app
 
@@ -137,13 +138,46 @@ The reasoning behind the main decisions is in [`ARCHITECTURE.md`](./ARCHITECTURE
 ## Conventions
 
 - **Language:** code, comments, docs and commits in English.
-- **Constants and types** never live in the element file: constants go in `X.constants.ts`, types in `X.types.ts`. Functions are documented with JSDoc.
-- **Complexity** of every function stays at 10 or less (ESLint `complexity`, same metric as Code Metrics).
+- **Constants and types** never live in the element file: constants go in `X.constants.ts`, types in `X.types.ts`.
+- **Everything has JSDoc:** classes, functions, methods, every property (with `@default`), every type, interface field and constant. See [Documentation and code metrics](#documentation-and-code-metrics).
+- **One blank line between class members**, and before every `return` that follows other statements.
+- **Code metrics** per function are enforced: complexity 10, cognitive complexity 10, 50 lines, 3 parameters, nesting depth 3.
 - **No deprecated APIs:** `@typescript-eslint/no-deprecated` is an error, and so are deprecated Sass features.
 - **No decorators.** Properties are declared with `static properties` and `declare` fields, so the code is standard JavaScript that does not depend on a decorator transform.
 - **Lifecycle methods only call named methods;** the logic lives in utils or private methods.
 - **Accessibility is part of the component:** roles, keyboard support, visible focus and 44 px touch targets.
 - **Git:** conventional commits, one per component or feature.
+
+## Documentation and code metrics
+
+**JSDoc everywhere.** ESLint (`eslint-plugin-jsdoc`) fails the build when a class, function, method, property, type, interface field or constant has no JSDoc block, when a parameter, return value or thrown error is undocumented, or when the block has no description. Component properties follow one format:
+
+```ts
+/**
+ * Most characters accepted. Also shows a character counter.
+ *
+ * @default undefined
+ */
+declare
+maxlength: number | undefined
+```
+
+Component classes also carry `@tag`, `@slot`, `@fires`, `@csspart`, `@cssprop` and an `@example`. The Custom Elements Manifest analyzer reads those comments, so `custom-elements.json` lists every attribute, property (with its description, default and the base class it comes from), event, slot and CSS part. Editors such as VS Code show it as autocomplete in HTML.
+
+**Code metrics.** The limits live in one file, [`metrics.config.js`](./metrics.config.js), and two tools read it:
+
+| Metric                             |             Limit | Enforced by                                     |
+| ---------------------------------- | ----------------: | ----------------------------------------------- |
+| Cyclomatic complexity per function |                10 | ESLint `complexity`, `pnpm metrics`             |
+| Cognitive complexity per function  |                10 | ESLint `sonarjs/cognitive-complexity`           |
+| Lines of code per function         | 50 (200 in tests) | ESLint `max-lines-per-function`, `pnpm metrics` |
+| Parameters per function            |                 3 | ESLint `max-params`, `pnpm metrics`             |
+| Nesting depth                      |                 3 | ESLint `max-depth`, `pnpm metrics`              |
+| Statements per function            |  15 (25 in tests) | ESLint `max-statements`                         |
+| Callbacks nested in callbacks      |    3 (4 in tests) | ESLint `max-nested-callbacks`                   |
+| Lines of code per file             |               300 | ESLint `max-lines`                              |
+
+`pnpm metrics` measures every function with the TypeScript compiler, prints the totals and the most complex functions, and exits with an error if any function goes over a limit. Its complexity count matches ESLint's on every function in the project. The current numbers are in [`docs/CODE-METRICS.md`](./docs/CODE-METRICS.md). Both checks run in CI.
 
 ## Testing and quality
 

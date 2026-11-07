@@ -97,12 +97,45 @@ Cada componente: `X.ts` (clase y registro), `X.types.ts`, `X.constants.ts`, `X.u
 ## Convenciones
 
 - Código, comentarios, documentación y commits en inglés.
-- Constantes y tipos nunca en el archivo del elemento; las funciones llevan JSDoc.
-- Complejidad ciclomática de 10 o menos por función.
+- Constantes y tipos nunca en el archivo del elemento.
+- Todo lleva JSDoc: clases, funciones, métodos, cada propiedad (con `@default`), cada tipo, campo de interfaz y constante.
+- Una línea en blanco entre los miembros de una clase y antes de cada `return` que sigue a otras instrucciones.
+- Métricas por función obligatorias: complejidad 10, complejidad cognitiva 10, 50 líneas, 3 parámetros y 3 niveles de anidación.
 - Nada deprecado: `@typescript-eslint/no-deprecated` es error, igual que las funciones deprecadas de Sass.
 - Sin decoradores: propiedades con `static properties` y campos `declare`, JavaScript estándar sin transformaciones.
 - La accesibilidad es parte del componente: roles, teclado, foco visible y áreas táctiles de 44 px.
 - Commits convencionales, uno por componente o funcionalidad.
+
+## Documentación y métricas de código
+
+**JSDoc en todo.** ESLint (`eslint-plugin-jsdoc`) rompe el build si una clase, función, método, propiedad, tipo, campo de interfaz o constante no tiene su bloque JSDoc, si falta documentar un parámetro, el valor de retorno o un error lanzado, o si el bloque no tiene descripción. Las propiedades de los componentes siguen un solo formato:
+
+```ts
+/**
+ * Most characters accepted. Also shows a character counter.
+ *
+ * @default undefined
+ */
+declare
+maxlength: number | undefined
+```
+
+Las clases de componentes llevan además `@tag`, `@slot`, `@fires`, `@csspart`, `@cssprop` y un `@example`. El analizador de Custom Elements Manifest lee esos comentarios, así que `custom-elements.json` lista cada atributo, propiedad (con descripción, valor por defecto y la clase base de la que viene), evento, slot y CSS part, y editores como VS Code lo muestran como autocompletado en HTML.
+
+**Métricas de código.** Los límites viven en un solo archivo, [`metrics.config.js`](./metrics.config.js), y los leen dos herramientas:
+
+| Métrica                             |            Límite | Lo valida                                       |
+| ----------------------------------- | ----------------: | ----------------------------------------------- |
+| Complejidad ciclomática por función |                10 | ESLint `complexity`, `pnpm metrics`             |
+| Complejidad cognitiva por función   |                10 | ESLint `sonarjs/cognitive-complexity`           |
+| Líneas de código por función        | 50 (200 en tests) | ESLint `max-lines-per-function`, `pnpm metrics` |
+| Parámetros por función              |                 3 | ESLint `max-params`, `pnpm metrics`             |
+| Niveles de anidación                |                 3 | ESLint `max-depth`, `pnpm metrics`              |
+| Instrucciones por función           |  15 (25 en tests) | ESLint `max-statements`                         |
+| Callbacks dentro de callbacks       |    3 (4 en tests) | ESLint `max-nested-callbacks`                   |
+| Líneas de código por archivo        |               300 | ESLint `max-lines`                              |
+
+`pnpm metrics` mide cada función con el compilador de TypeScript, imprime los totales y las funciones más complejas, y termina con error si alguna pasa un límite. Su conteo de complejidad coincide con el de ESLint en todas las funciones del proyecto. Los números actuales están en [`docs/CODE-METRICS.md`](./docs/CODE-METRICS.md). Las dos validaciones corren en CI.
 
 ## Tests y calidad
 

@@ -2,6 +2,7 @@ import { playwright } from '@vitest/browser-playwright'
 import { defineConfig, mergeConfig } from 'vitest/config'
 import viteConfig from './vite.config'
 
+/** Local Chrome to use instead of the Playwright download (CI leaves it unset). */
 const executablePath = process.env.CHROME_PATH
 
 export default mergeConfig(
