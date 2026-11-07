@@ -1,0 +1,61 @@
+@use '../../../design-system/styles/mixins' as *;
+@use '../../styles/layout' as *;
+
+@include view;
+
+.layout {
+  display: grid;
+  gap: var(--bc-space-48);
+
+  @include from('desktop') {
+    grid-template-columns: minmax(0, 40rem) minmax(0, 1fr);
+  }
+}
+
+.intro {
+  max-width: 56ch;
+  margin: var(--bc-space-12) 0 var(--bc-space-32);
+  @include muted;
+  @include type('l', 400, 'body', 1.4);
+}
+
+form {
+  display: grid;
+  gap: var(--bc-space-24);
+}
+
+.pair {
+  display: grid;
+  gap: var(--bc-space-24);
+
+  @include from('tablet') {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--bc-space-12);
+  padding-block-start: var(--bc-space-8);
+}
+
+aside {
+  align-self: start;
+  padding: var(--bc-space-24);
+  border-inline-start: 3px solid var(--bc-color-accent);
+  background: var(--bc-color-surface);
+
+  h2 {
+    margin-block-end: var(--bc-space-12);
+    font-size: var(--bc-text-m);
+  }
+
+  ol {
+    display: grid;
+    gap: var(--bc-space-8);
+    margin: 0;
+    padding-inline-start: var(--bc-space-16);
+    @include type('s');
+  }
+}
