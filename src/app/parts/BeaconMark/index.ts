@@ -1,0 +1,1 @@
+export { BeaconMark } from './BeaconMark'
