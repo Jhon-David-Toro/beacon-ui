@@ -2,13 +2,13 @@ import { html, nothing, unsafeCSS } from 'lit'
 import { ifDefined } from 'lit/directives/if-defined.js'
 import { live } from 'lit/directives/live.js'
 import {
-  FormControl,
+  ValueControl,
   defineElement,
   describedBy,
   renderFieldMessage,
   renderRequiredMark,
 } from '../../shared'
-import type { FieldMessages, FormValue } from '../../shared'
+import type { FieldMessages } from '../../shared'
 import '../Icon/Icon'
 import { DEFAULT_TEXTAREA_ROWS, TEXT_FIELD_TAG } from './TextField.constants'
 import styles from './TextField.scss?inline'
@@ -24,72 +24,87 @@ import { validationText, validityFlags } from './TextField.utils'
  * @tag bc-text-field
  * @fires input - On every keystroke, like a native input.
  * @fires change - When the value is committed.
+ * @csspart control - The inner input or textarea.
+ * @example
+ * ```html
+ * <form>
+ *   <bc-text-field name="title" label="What is happening" required minlength="8"></bc-text-field>
+ * </form>
+ * ```
  */
-export class BcTextField extends FormControl {
+export class BcTextField extends ValueControl {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Reactive properties, on top of the ones from `ValueControl`. */
   static override properties = {
-    ...FormControl.properties,
-    label: {},
-    value: {},
+    ...ValueControl.properties,
     type: {},
-    placeholder: {},
-    hint: {},
     multiline: { type: Boolean },
     minlength: { type: Number },
     maxlength: { type: Number },
     autocomplete: {},
   }
 
-  declare label: string
-  declare value: string
-  /** Input type. Ignored when `multiline` is set. */
+  /**
+   * Input type. Ignored when `multiline` is set.
+   *
+   * @default 'text'
+   */
   declare type: TextFieldType
-  declare placeholder: string | undefined
-  /** Help text shown under the field while it is valid. */
-  declare hint: string
-  /** Renders a textarea instead of an input. */
+
+  /**
+   * Renders a textarea instead of a single-line input.
+   *
+   * @default false
+   */
   declare multiline: boolean
+
+  /**
+   * Fewest characters accepted.
+   *
+   * @default undefined
+   */
   declare minlength: number | undefined
-  /** Also shows a character counter. */
+
+  /**
+   * Most characters accepted. Also shows a character counter.
+   *
+   * @default undefined
+   */
   declare maxlength: number | undefined
+
+  /**
+   * Autofill hint for the browser, as on a native input.
+   *
+   * @default undefined
+   */
   declare autocomplete: AutoFill | undefined
 
-  #defaultValue = ''
-
+  /** Sets the defaults. */
   constructor() {
     super()
-    this.label = ''
-    this.value = ''
     this.type = 'text'
-    this.placeholder = undefined
-    this.hint = ''
     this.multiline = false
     this.minlength = undefined
     this.maxlength = undefined
     this.autocomplete = undefined
   }
 
-  override connectedCallback(): void {
-    super.connectedCallback()
-    this.#defaultValue = this.value
-  }
-
+  /**
+   * Renders the label, the control, and the hint or error with the counter.
+   *
+   * @returns The field template.
+   */
   override render() {
     const messages = this.#messages()
+
     return html`<label for="control">${this.label}${renderRequiredMark(this.required)}</label>
       ${this.multiline ? this.#renderTextarea(messages) : this.#renderInput(messages)}
       <div class="meta">${renderFieldMessage(messages)}${this.#renderCount()}</div>`
   }
 
-  protected formValue(): FormValue {
-    return this.value
-  }
-
-  protected resetValue(): void {
-    this.value = this.#defaultValue
-  }
-
+  /** Copies the inner control's validity to the host. */
   protected syncValidity(): void {
     const control = this.#control
     if (!control) {
@@ -98,15 +113,24 @@ export class BcTextField extends FormControl {
     this.internals.setValidity(validityFlags(control), validationText(control, this.label), control)
   }
 
-  /** Inner native control. */
+  /**
+   * Inner native control.
+   *
+   * @returns The input or textarea, or `null` before the first render.
+   */
   get #control(): TextControl | null {
     return this.renderRoot.querySelector('#control')
   }
 
-  /** Current hint and the error to show, if any. */
+  /**
+   * Current hint and the error to show, if any.
+   *
+   * @returns The messages for this render.
+   */
   #messages(): FieldMessages {
     const control = this.#control
     const error = control && this.showError() ? validationText(control, this.label) : ''
+
     return { hint: this.hint, error }
   }
 
@@ -114,6 +138,7 @@ export class BcTextField extends FormControl {
    * Single-line input.
    *
    * @param messages - Hint and error for ARIA wiring.
+   * @returns The input template.
    */
   #renderInput(messages: FieldMessages) {
     return html`<input
@@ -139,6 +164,7 @@ export class BcTextField extends FormControl {
    * Multi-line textarea.
    *
    * @param messages - Hint and error for ARIA wiring.
+   * @returns The textarea template.
    */
   #renderTextarea(messages: FieldMessages) {
     return html`<textarea
@@ -159,17 +185,26 @@ export class BcTextField extends FormControl {
     ></textarea>`
   }
 
-  /** Character counter, only when there is a maximum. */
+  /**
+   * Character counter, only when there is a maximum.
+   *
+   * @returns The counter, or `nothing` without `maxlength`.
+   */
   #renderCount() {
     if (this.maxlength === undefined) {
       return nothing
     }
+
     return html`<span class="count" aria-hidden="true"
       >${this.value.length}/${this.maxlength}</span
     >`
   }
 
-  /** Keeps `value` in step with what the user types. */
+  /**
+   * Keeps `value` in step with what the user types.
+   *
+   * @param event - `input` event from the inner control.
+   */
   readonly #handleInput = (event: Event): void => {
     this.value = (event.target as TextControl).value
   }

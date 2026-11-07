@@ -5,6 +5,7 @@ import type { UptimeDay, UptimeLevel } from './UptimeBar.types'
  * Classifies one day's uptime percentage.
  *
  * @param uptime - Percentage from 0 to 100, or `null` when not measured.
+ * @returns The level used to colour the day.
  */
 export function uptimeLevel(uptime: number | null): UptimeLevel {
   if (uptime === null) {
@@ -13,6 +14,7 @@ export function uptimeLevel(uptime: number | null): UptimeLevel {
   if (uptime >= UPTIME_HEALTHY) {
     return 'healthy'
   }
+
   return uptime >= UPTIME_DEGRADED ? 'degraded' : 'down'
 }
 
@@ -20,12 +22,14 @@ export function uptimeLevel(uptime: number | null): UptimeLevel {
  * Average uptime of the measured days, or `null` if none were measured.
  *
  * @param days - Daily uptime records.
+ * @returns The mean percentage, or `null`.
  */
 export function averageUptime(days: readonly UptimeDay[]): number | null {
   const measured = days.flatMap((day) => (day.uptime === null ? [] : [day.uptime]))
   if (measured.length === 0) {
     return null
   }
+
   return measured.reduce((sum, value) => sum + value, 0) / measured.length
 }
 
@@ -34,11 +38,13 @@ export function averageUptime(days: readonly UptimeDay[]): number | null {
  * rounding up to 100 % unless it really is 100 %.
  *
  * @param uptime - Percentage, or `null` when unknown.
+ * @returns Text such as "99.98%", or "No data".
  */
 export function formatUptime(uptime: number | null): string {
   if (uptime === null) {
     return 'No data'
   }
+
   return `${(Math.floor(uptime * 100) / 100).toFixed(2)}%`
 }
 
@@ -46,6 +52,7 @@ export function formatUptime(uptime: number | null): string {
  * Text read by screen readers for one day of the bar.
  *
  * @param day - Daily uptime record.
+ * @returns Text such as "2026-11-02: 96.00%".
  */
 export function describeDay(day: UptimeDay): string {
   return `${day.date}: ${formatUptime(day.uptime)}`
@@ -56,9 +63,11 @@ export function describeDay(day: UptimeDay): string {
  *
  * @param label - Name of what is being measured.
  * @param days - Daily uptime records.
+ * @returns A sentence with the average and the number of days with issues.
  */
 export function describeUptime(label: string, days: readonly UptimeDay[]): string {
   const incidents = days.filter((day) => uptimeLevel(day.uptime) !== 'healthy').length
   const average = formatUptime(averageUptime(days))
+
   return `${label}: ${average} over ${days.length} days, ${incidents} with issues`
 }

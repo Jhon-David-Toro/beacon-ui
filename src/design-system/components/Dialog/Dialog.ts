@@ -16,20 +16,40 @@ import styles from './Dialog.scss?inline'
  * @slot - Body content.
  * @slot footer - Actions, usually `bc-button` elements.
  * @fires bc-close - After the dialog closes, whatever closed it.
+ * @csspart dialog - The native dialog box.
+ * @example
+ * ```html
+ * <bc-dialog heading="Pause alerts?">
+ *   Alerts stop for one hour.
+ *   <bc-button slot="footer" variant="primary">Pause alerts</bc-button>
+ * </bc-dialog>
+ * ```
  */
 export class BcDialog extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Reactive properties; each one is documented on its field. */
   static override properties = {
     open: { type: Boolean, reflect: true },
     heading: {},
   }
 
-  /** Whether the dialog is shown. */
+  /**
+   * Whether the dialog is shown.
+   *
+   * @default false
+   */
   declare open: boolean
-  /** Title, also used as the dialog's accessible name. */
+
+  /**
+   * Title, also used as the dialog's accessible name.
+   *
+   * @default ''
+   */
   declare heading: string
 
+  /** Sets the defaults. */
   constructor() {
     super()
     this.open = false
@@ -46,6 +66,11 @@ export class BcDialog extends LitElement {
     this.open = false
   }
 
+  /**
+   * Opens or closes the native dialog when `open` changes.
+   *
+   * @param changed - Properties that changed in this update.
+   */
   protected override updated(changed: PropertyValues<this>): void {
     super.updated(changed)
     if (changed.has('open')) {
@@ -53,6 +78,11 @@ export class BcDialog extends LitElement {
     }
   }
 
+  /**
+   * Renders the native dialog with its header, body and footer slots.
+   *
+   * @returns The dialog template.
+   */
   override render() {
     // Clicking the backdrop is a pointer shortcut; keyboard users close the
     // dialog with Escape, which the native element already handles.
@@ -74,7 +104,11 @@ export class BcDialog extends LitElement {
     </dialog>`
   }
 
-  /** The native dialog in the shadow root. */
+  /**
+   * The native dialog in the shadow root.
+   *
+   * @returns The dialog, or `null` before the first render.
+   */
   get #dialog(): HTMLDialogElement | null {
     return this.renderRoot.querySelector('dialog')
   }
@@ -103,7 +137,11 @@ export class BcDialog extends LitElement {
     this.close()
   }
 
-  /** Closes the dialog when its backdrop is clicked. */
+  /**
+   * Closes the dialog when its backdrop is clicked.
+   *
+   * @param event - Click on the dialog or its backdrop.
+   */
   readonly #handleClick = (event: MouseEvent): void => {
     const dialog = this.#dialog
     if (dialog && isBackdropClick(dialog, event)) {

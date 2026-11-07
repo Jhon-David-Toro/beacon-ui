@@ -7,6 +7,8 @@ import { isBackdropClick } from './Dialog.utils'
 
 /**
  * Mounts a dialog with a focusable body.
+ *
+ * @returns The mounted dialog, closed.
  */
 async function mount(): Promise<BcDialog> {
   return fixture<BcDialog>(

@@ -4,6 +4,7 @@ import { fixture, lightQuery, settle, shadowQuery } from '../../../test/fixture'
 import './Select'
 import type { BcSelect } from './Select'
 
+/** Two services to choose from. */
 const options = [
   { value: 'api', label: 'API gateway' },
   { value: 'search', label: 'Search' },
@@ -13,6 +14,7 @@ const options = [
  * Mounts a select inside a form with the shared options.
  *
  * @param attributes - Extra attributes for the select.
+ * @returns The form and the select inside it.
  */
 async function mount(attributes = ''): Promise<{ form: HTMLFormElement; el: BcSelect }> {
   const form = await fixture<HTMLFormElement>(
@@ -22,6 +24,7 @@ async function mount(attributes = ''): Promise<{ form: HTMLFormElement; el: BcSe
   el.options = options
   await settle(el)
   await el.updateComplete
+
   return { form, el }
 }
 

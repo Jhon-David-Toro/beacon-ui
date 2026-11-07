@@ -7,8 +7,8 @@ import {
   DEFAULT_BUTTON_TYPE,
   DEFAULT_BUTTON_VARIANT,
 } from './Button.constants'
-import type { ButtonSize, ButtonType, ButtonVariant } from './Button.types'
 import styles from './Button.scss?inline'
+import type { ButtonSize, ButtonType, ButtonVariant } from './Button.types'
 
 /**
  * Action button. Renders a link when `href` is set.
@@ -19,17 +19,27 @@ import styles from './Button.scss?inline'
  *
  * @tag bc-button
  * @slot - Button label, optionally with an icon.
+ * @csspart control - The inner button or link.
+ * @example
+ * ```html
+ * <bc-button variant="primary" type="submit">Save changes</bc-button>
+ * <bc-button href="#/report">Report incident</bc-button>
+ * ```
  */
 export class BcButton extends LitElement {
+  /** Tells the browser this element participates in forms. */
   static formAssociated = true
 
+  /** Forwards focus to the inner button when the host is focused. */
   static override shadowRootOptions: ShadowRootInit = {
     ...LitElement.shadowRootOptions,
     delegatesFocus: true,
   }
 
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Reactive properties; each one is documented on its field. */
   static override properties = {
     variant: { reflect: true },
     size: { reflect: true },
@@ -39,20 +49,52 @@ export class BcButton extends LitElement {
     label: {},
   }
 
-  /** Visual emphasis. */
+  /**
+   * Visual emphasis.
+   *
+   * @default 'secondary'
+   */
   declare variant: ButtonVariant
-  /** Control height. */
+
+  /**
+   * Control height.
+   *
+   * @default 'm'
+   */
   declare size: ButtonSize
-  /** Form behaviour, as on a native button. */
+
+  /**
+   * Form behaviour, as on a native button.
+   *
+   * @default 'button'
+   */
   declare type: ButtonType
+
+  /**
+   * Blocks interaction. A disabled link renders as a disabled button.
+   *
+   * @default false
+   */
   declare disabled: boolean
-  /** When set, the button renders as a link to this URL. */
+
+  /**
+   * When set, the button renders as a link to this URL.
+   *
+   * @default undefined
+   */
   declare href: string | undefined
-  /** Accessible name, for icon-only buttons. */
+
+  /**
+   * Accessible name, for icon-only buttons.
+   *
+   * @default undefined
+   */
   declare label: string | undefined
 
+  /** Connection to the owning form. */
   readonly #internals: ElementInternals
 
+  /** Sets the defaults and attaches the form internals. */
   constructor() {
     super()
     this.#internals = this.attachInternals()
@@ -64,6 +106,12 @@ export class BcButton extends LitElement {
     this.label = undefined
   }
 
+  /**
+   * Renders a link when `href` is set and the button is enabled, otherwise a
+   * native button.
+   *
+   * @returns The control template.
+   */
   override render() {
     if (this.href && !this.disabled) {
       return html`<a
@@ -74,6 +122,7 @@ export class BcButton extends LitElement {
         ><slot></slot
       ></a>`
     }
+
     return html`<button
       class="control"
       part="control"

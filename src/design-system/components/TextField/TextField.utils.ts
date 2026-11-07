@@ -5,9 +5,11 @@ import type { TextControl } from './TextField.types'
  * same constraint errors a native input would.
  *
  * @param control - Inner input or textarea.
+ * @returns The flags to pass to `ElementInternals.setValidity()`.
  */
 export function validityFlags(control: TextControl): ValidityStateFlags {
   const { validity } = control
+
   return {
     valueMissing: validity.valueMissing,
     typeMismatch: validity.typeMismatch,
@@ -22,6 +24,7 @@ export function validityFlags(control: TextControl): ValidityStateFlags {
  *
  * @param control - Inner input or textarea.
  * @param label - Field label, used in the message.
+ * @returns The message, or the browser's own message for other constraints.
  */
 export function validationText(control: TextControl, label: string): string {
   const { validity } = control
@@ -34,5 +37,6 @@ export function validationText(control: TextControl, label: string): string {
   if (validity.typeMismatch) {
     return `Enter a valid ${control.type === 'email' ? 'email address' : 'value'}.`
   }
+
   return control.validationMessage
 }

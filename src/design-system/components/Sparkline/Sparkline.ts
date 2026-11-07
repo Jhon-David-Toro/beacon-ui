@@ -6,19 +6,28 @@ import {
   SPARKLINE_PADDING,
   SPARKLINE_TAG,
 } from './Sparkline.constants'
+import styles from './Sparkline.scss?inline'
 import type { ChartBox, Extent, Point, SparklineTone } from './Sparkline.types'
 import { areaPath, describeSeries, extentOf, linePath, scaleY, toPoints } from './Sparkline.utils'
-import styles from './Sparkline.scss?inline'
 
 /**
  * Compact line chart for a numeric series. It scales to its container's
  * width and announces a text summary instead of the raw points.
  *
  * @tag bc-sparkline
+ * @example
+ * ```html
+ * <bc-sparkline label="Latency" unit="ms" threshold="250" area></bc-sparkline>
+ * <script>
+ *   document.querySelector('bc-sparkline').values = [120, 98, 143, 260]
+ * </script>
+ * ```
  */
 export class BcSparkline extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Reactive properties; each one is documented on its field. */
   static override properties = {
     values: { attribute: false },
     label: {},
@@ -30,20 +39,63 @@ export class BcSparkline extends LitElement {
     height: { type: Number },
   }
 
-  /** Data series, oldest first. */
+  /**
+   * Data series, oldest first. Set it as a property, not an attribute.
+   *
+   * @default []
+   */
   declare values: readonly number[]
-  /** What the series measures, used in the accessible summary. */
+
+  /**
+   * What the series measures, used in the accessible summary.
+   *
+   * @default 'Series'
+   */
   declare label: string
+
+  /**
+   * Unit appended to the numbers in the summary, such as `ms`.
+   *
+   * @default ''
+   */
   declare unit: string
+
+  /**
+   * Line colour.
+   *
+   * @default 'neutral'
+   */
   declare tone: SparklineTone
-  /** Fills the area under the line. */
+
+  /**
+   * Fills the area under the line.
+   *
+   * @default false
+   */
   declare area: boolean
-  /** Draws a dashed reference line at this value. */
+
+  /**
+   * Draws a dashed reference line at this value, such as a latency target.
+   *
+   * @default undefined
+   */
   declare threshold: number | undefined
-  /** Drawing width; the SVG still scales to its container. */
+
+  /**
+   * Drawing width; the SVG still scales to its container.
+   *
+   * @default 160
+   */
   declare width: number
+
+  /**
+   * Drawing height.
+   *
+   * @default 40
+   */
   declare height: number
 
+  /** Sets the defaults. */
   constructor() {
     super()
     this.values = []
@@ -56,10 +108,16 @@ export class BcSparkline extends LitElement {
     this.height = DEFAULT_SPARKLINE_HEIGHT
   }
 
+  /**
+   * Renders the area, threshold, line and last-point marker.
+   *
+   * @returns The chart template.
+   */
   override render() {
     const box: ChartBox = { width: this.width, height: this.height, padding: SPARKLINE_PADDING }
     const extent = extentOf(this.values, this.threshold)
     const points = toPoints(this.values, box, extent)
+
     return html`<svg
       viewBox="0 0 ${box.width} ${box.height}"
       role="img"
@@ -78,12 +136,14 @@ export class BcSparkline extends LitElement {
    *
    * @param box - Chart dimensions.
    * @param extent - Range of the vertical scale.
+   * @returns The line, or `nothing` without a threshold.
    */
   #renderThreshold(box: ChartBox, extent: Extent) {
     if (this.threshold === undefined) {
       return nothing
     }
     const y = scaleY(this.threshold, extent, box)
+
     return svg`<line class="threshold" x1="0" x2=${box.width} y1=${y} y2=${y}></line>`
   }
 
@@ -91,6 +151,7 @@ export class BcSparkline extends LitElement {
    * Marker on the most recent point.
    *
    * @param point - Last point of the series.
+   * @returns The marker, or `nothing` for an empty series.
    */
   #renderLast(point: Point | undefined) {
     return point ? svg`<circle class="last" cx=${point.x} cy=${point.y} r="2.5"></circle>` : nothing

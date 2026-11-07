@@ -8,11 +8,13 @@ import type { BcSparkline } from './Sparkline'
  *
  * @param markup - Element markup.
  * @param values - Series to draw.
+ * @returns The sparkline, drawn with the series.
  */
 async function mount(markup: string, values: number[]): Promise<BcSparkline> {
   const el = await fixture<BcSparkline>(markup)
   el.values = values
   await el.updateComplete
+
   return el
 }
 

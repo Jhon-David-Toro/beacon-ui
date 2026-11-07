@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { areaPath, describeSeries, extentOf, linePath, scaleY, toPoints } from './Sparkline.utils'
 
+/** 100 × 20 box without padding, so expected coordinates are easy to read. */
 const box = { width: 100, height: 20, padding: 0 }
 
 describe('extentOf', () => {

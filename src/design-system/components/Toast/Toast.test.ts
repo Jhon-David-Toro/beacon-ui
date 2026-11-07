@@ -8,6 +8,7 @@ import { dequeue, enqueue } from './Toast.utils'
  * Messages currently rendered by the region.
  *
  * @param el - Toast region.
+ * @returns The text of every toast on screen.
  */
 function messages(el: BcToastRegion): string[] {
   return [...(el.shadowRoot?.querySelectorAll('.message') ?? [])].map((node) => node.textContent)

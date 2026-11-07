@@ -6,12 +6,14 @@ import type { ChartBox, Extent, Point } from './Sparkline.types'
  *
  * @param values - Data series.
  * @param reference - Extra value that must be inside the range.
+ * @returns The range; `{ min: 0, max: 0 }` for an empty series.
  */
 export function extentOf(values: readonly number[], reference?: number): Extent {
   const all = reference === undefined ? values : [...values, reference]
   if (all.length === 0) {
     return { min: 0, max: 0 }
   }
+
   return { min: Math.min(...all), max: Math.max(...all) }
 }
 
@@ -21,6 +23,7 @@ export function extentOf(values: readonly number[], reference?: number): Extent 
  * @param value - Data value.
  * @param extent - Range of the series.
  * @param box - Chart dimensions.
+ * @returns The y coordinate; the middle of the box for a flat series.
  */
 export function scaleY(value: number, extent: Extent, box: ChartBox): number {
   const span = extent.max - extent.min
@@ -28,6 +31,7 @@ export function scaleY(value: number, extent: Extent, box: ChartBox): number {
   if (span === 0) {
     return box.height / 2
   }
+
   return box.padding + inner - ((value - extent.min) / span) * inner
 }
 
@@ -37,9 +41,11 @@ export function scaleY(value: number, extent: Extent, box: ChartBox): number {
  * @param values - Data series.
  * @param box - Chart dimensions.
  * @param extent - Range used for the vertical scale.
+ * @returns One point per value, in the same order.
  */
 export function toPoints(values: readonly number[], box: ChartBox, extent: Extent): Point[] {
   const step = values.length > 1 ? (box.width - box.padding * 2) / (values.length - 1) : 0
+
   return values.map((value, index) => ({
     x: round(box.padding + index * step),
     y: round(scaleY(value, extent, box)),
@@ -50,6 +56,7 @@ export function toPoints(values: readonly number[], box: ChartBox, extent: Exten
  * SVG path data for a polyline through the points.
  *
  * @param points - Points in drawing order.
+ * @returns The `d` attribute of the line.
  */
 export function linePath(points: readonly Point[]): string {
   return points.map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x} ${point.y}`).join(' ')
@@ -60,6 +67,7 @@ export function linePath(points: readonly Point[]): string {
  *
  * @param points - Points in drawing order.
  * @param box - Chart dimensions.
+ * @returns The `d` attribute of the area, or an empty string with no points.
  */
 export function areaPath(points: readonly Point[], box: ChartBox): string {
   const first = points[0]
@@ -68,6 +76,7 @@ export function areaPath(points: readonly Point[], box: ChartBox): string {
     return ''
   }
   const floor = box.height - box.padding
+
   return `${linePath(points)} L${last.x} ${floor} L${first.x} ${floor} Z`
 }
 
@@ -77,6 +86,7 @@ export function areaPath(points: readonly Point[], box: ChartBox): string {
  * @param label - What the series measures.
  * @param values - Data series.
  * @param unit - Unit appended to each number.
+ * @returns A sentence such as "Latency: latest 20ms, range 10ms to 30ms".
  */
 export function describeSeries(label: string, values: readonly number[], unit: string): string {
   const last = values.at(-1)
@@ -84,6 +94,7 @@ export function describeSeries(label: string, values: readonly number[], unit: s
     return `${label}: no data`
   }
   const { min, max } = extentOf(values)
+
   return `${label}: latest ${format(last, unit)}, range ${format(min, unit)} to ${format(max, unit)}`
 }
 
@@ -91,6 +102,7 @@ export function describeSeries(label: string, values: readonly number[], unit: s
  * Rounds to one decimal so path strings stay short and stable.
  *
  * @param value - Number to round.
+ * @returns The rounded number.
  */
 function round(value: number): number {
   return Math.round(value * 10) / 10
@@ -101,6 +113,7 @@ function round(value: number): number {
  *
  * @param value - Number to format.
  * @param unit - Unit suffix.
+ * @returns The rounded number followed by the unit.
  */
 function format(value: number, unit: string): string {
   return `${Math.round(value)}${unit}`

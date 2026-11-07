@@ -5,6 +5,7 @@
  *
  * @param dialog - The dialog element.
  * @param event - Pointer event to test.
+ * @returns `true` when the click was outside the dialog box.
  */
 export function isBackdropClick(dialog: HTMLDialogElement, event: MouseEvent): boolean {
   if (event.target !== dialog) {
@@ -16,5 +17,6 @@ export function isBackdropClick(dialog: HTMLDialogElement, event: MouseEvent): b
     event.clientX <= rect.right &&
     event.clientY >= rect.top &&
     event.clientY <= rect.bottom
+
   return !inside
 }

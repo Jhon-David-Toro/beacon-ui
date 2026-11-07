@@ -4,6 +4,7 @@ import { fixture, lightQuery, shadowQuery } from '../../../test/fixture'
 import './Tabs'
 import type { BcTabs } from './Tabs'
 
+/** Three panels in one tab list. */
 const markup = `<bc-tabs label="Details">
   <bc-tab-panel label="Latency">Latency chart</bc-tab-panel>
   <bc-tab-panel label="Uptime">Uptime bar</bc-tab-panel>
@@ -12,11 +13,14 @@ const markup = `<bc-tabs label="Details">
 
 /**
  * Mounts the tabs and waits for the slot to report its panels.
+ *
+ * @returns The tabs, with their panels collected.
  */
 async function mount(): Promise<BcTabs> {
   const el = await fixture<BcTabs>(markup)
   await new Promise(requestAnimationFrame)
   await el.updateComplete
+
   return el
 }
 
@@ -24,6 +28,7 @@ async function mount(): Promise<BcTabs> {
  * Tab buttons rendered in the shadow root.
  *
  * @param el - Tabs element.
+ * @returns The buttons, in order.
  */
 function tabs(el: BcTabs): HTMLButtonElement[] {
   return [...(el.shadowRoot?.querySelectorAll('button') ?? [])]

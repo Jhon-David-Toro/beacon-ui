@@ -30,6 +30,7 @@ export function nextTabIndex(current: number, key: string, count: number): numbe
  *
  * @param index - Requested index.
  * @param count - Number of tabs.
+ * @returns An index between 0 and `count - 1` (0 for an empty list).
  */
 export function clampIndex(index: number, count: number): number {
   return Math.min(Math.max(index, 0), Math.max(count - 1, 0))

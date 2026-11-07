@@ -14,19 +14,33 @@ import styles from './Toast.scss?inline'
  * from the start, so screen readers announce every message added to it.
  *
  * @tag bc-toast-region
+ * @example
+ * ```html
+ * <bc-toast-region></bc-toast-region>
+ * <script>
+ *   document.querySelector('bc-toast-region').show({ message: 'Saved.', tone: 'success' })
+ * </script>
+ * ```
  */
 export class BcToastRegion extends LitElement {
+  /** Compiled styles, adopted by the shadow root. */
   static override styles = unsafeCSS(styles)
 
+  /** Reactive properties; each one is documented on its field. */
   static override properties = {
     items: { state: true },
   }
 
+  /** Toasts on screen, oldest first. */
   declare private items: ToastItem[]
 
+  /** Id given to the next toast. */
   #nextId = 0
+
+  /** Auto-dismiss timer of each toast, by toast id. */
   readonly #timers = new Map<number, number>()
 
+  /** Sets the defaults. */
   constructor() {
     super()
     this.items = []
@@ -46,6 +60,7 @@ export class BcToastRegion extends LitElement {
       TOAST_LIMIT,
     )
     this.#timers.set(id, window.setTimeout(this.dismiss, options.duration ?? TOAST_DURATION_MS, id))
+
     return id
   }
 
@@ -60,6 +75,7 @@ export class BcToastRegion extends LitElement {
     this.items = dequeue(this.items, id)
   }
 
+  /** Clears every pending timer so nothing fires after removal. */
   override disconnectedCallback(): void {
     super.disconnectedCallback()
     this.#timers.forEach((timer) => {
@@ -68,6 +84,11 @@ export class BcToastRegion extends LitElement {
     this.#timers.clear()
   }
 
+  /**
+   * Renders the live region with one item per toast.
+   *
+   * @returns The region template.
+   */
   override render() {
     return html`<ol role="status" aria-live="polite" aria-label="Notifications">
       ${repeat(
@@ -90,7 +111,11 @@ export class BcToastRegion extends LitElement {
     </ol>`
   }
 
-  /** Dismisses the toast whose close button was clicked. */
+  /**
+   * Dismisses the toast whose close button was clicked.
+   *
+   * @param event - Click on a dismiss button.
+   */
   readonly #handleDismiss = (event: Event): void => {
     const button = event.currentTarget as HTMLElement
     this.dismiss(Number(button.dataset.id))

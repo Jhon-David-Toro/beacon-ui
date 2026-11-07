@@ -8,6 +8,7 @@ import type { BcTextField } from './TextField'
  * Mounts a text field inside a form.
  *
  * @param attributes - Attributes for the field.
+ * @returns The form and the field inside it.
  */
 async function mountInForm(
   attributes: string,
@@ -17,6 +18,7 @@ async function mountInForm(
   )
   const el = lightQuery(form, 'bc-text-field')
   await settle(el)
+
   return { form, el }
 }
 
