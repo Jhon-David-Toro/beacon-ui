@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Beacon: a service status console built with Lit Web Components and a design system of its own."
+    />
+    <meta name="theme-color" content="#f6f8f6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e1729" media="(prefers-color-scheme: dark)" />
+    <meta property="og:title" content="Beacon – Service status" />
+    <meta
+      property="og:description"
+      content="Lit Web Components design system and status console."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Beacon – Service status</title>
+    <script>
+      // Applies the saved or system theme before first paint, so the page
+      // never flashes the wrong colours. Mirrors ThemeController.
+      try {
+        const saved = localStorage.getItem('beacon:theme')
+        const dark = matchMedia('(prefers-color-scheme: dark)').matches
+        document.documentElement.dataset.theme =
+          saved === 'light' || saved === 'dark' ? saved : dark ? 'dark' : 'light'
+      } catch {
+        document.documentElement.dataset.theme = 'light'
+      }
+    </script>
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main" id="skip">Skip to content</a>
+    <beacon-app></beacon-app>
+    <noscript>Beacon needs JavaScript to load service status.</noscript>
+  </body>
+</html>

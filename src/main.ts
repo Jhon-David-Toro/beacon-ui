@@ -1,0 +1,5 @@
+import '@fontsource-variable/bricolage-grotesque'
+import '@fontsource-variable/schibsted-grotesk'
+import './design-system/styles/tokens.scss'
+import './app/styles/global.scss'
+import './app/shell/AppRoot'
