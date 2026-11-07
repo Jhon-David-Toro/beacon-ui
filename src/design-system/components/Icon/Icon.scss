@@ -1,0 +1,14 @@
+:host {
+  display: inline-flex;
+  flex: none;
+  color: inherit;
+}
+
+svg {
+  display: block;
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
