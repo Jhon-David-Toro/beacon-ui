@@ -79,7 +79,7 @@ export class BcTextField extends FormControl {
     const messages = this.#messages()
     return html`<label for="control">${this.label}${renderRequiredMark(this.required)}</label>
       ${this.multiline ? this.#renderTextarea(messages) : this.#renderInput(messages)}
-      ${renderFieldMessage(messages)} ${this.#renderCount()}`
+      <div class="meta">${renderFieldMessage(messages)}${this.#renderCount()}</div>`
   }
 
   protected formValue(): FormValue {

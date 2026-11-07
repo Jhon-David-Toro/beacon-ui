@@ -74,3 +74,45 @@ function mustFind(root: ParentNode | null, selector: string, owner: string): HTM
   }
   return found
 }
+
+/**
+ * Finds the first element matching a selector anywhere under `root`,
+ * descending into every open shadow root. App-level tests use it to reach
+ * through nested components the way a user's eyes would.
+ *
+ * @param root - Node to start from.
+ * @param selector - CSS selector to match.
+ */
+export function deepQuery(root: ParentNode, selector: string): HTMLElement | null {
+  const direct = root.querySelector<HTMLElement>(selector)
+  if (direct) {
+    return direct
+  }
+  const own =
+    root instanceof Element && root.shadowRoot ? deepQuery(root.shadowRoot, selector) : null
+  if (own) {
+    return own
+  }
+  for (const element of root.querySelectorAll('*')) {
+    const found = element.shadowRoot ? deepQuery(element.shadowRoot, selector) : null
+    if (found) {
+      return found
+    }
+  }
+  return null
+}
+
+/**
+ * Text content of an element, flattened across shadow roots and slots.
+ *
+ * @param node - Element to read.
+ */
+export function deepText(node: Node): string {
+  if (node.nodeType === Node.TEXT_NODE) {
+    return node.textContent ?? ''
+  }
+  const element = node as Element
+  const children = element.shadowRoot ? [...element.shadowRoot.childNodes] : [...node.childNodes]
+  const slotted = element instanceof HTMLSlotElement ? element.assignedNodes({ flatten: true }) : []
+  return [...(slotted.length ? slotted : children)].map(deepText).join('')
+}

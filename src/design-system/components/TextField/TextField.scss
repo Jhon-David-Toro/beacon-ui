@@ -15,9 +15,18 @@ textarea {
   line-height: var(--bc-leading-body);
 }
 
+.meta {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--bc-space-16);
+
+  &:empty {
+    display: none;
+  }
+}
+
 .count {
-  justify-self: end;
-  margin-block-start: calc(var(--bc-space-4) * -1);
+  margin-inline-start: auto;
   color: var(--bc-color-text-muted);
   @include type('xs');
   font-variant-numeric: tabular-nums;

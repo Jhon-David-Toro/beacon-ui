@@ -12,6 +12,7 @@ import styles from './UptimeBar.scss?inline'
  *
  * @tag bc-uptime-bar
  * @cssprop --bc-uptime-height - Height of the bars. Defaults to 32px.
+ * @cssprop --bc-uptime-gap - Space between bars. Defaults to 2px.
  */
 export class BcUptimeBar extends LitElement {
   static override styles = unsafeCSS(styles)

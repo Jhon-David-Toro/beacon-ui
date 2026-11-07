@@ -21,7 +21,7 @@ $variants: (
   ),
   danger: (
     bg: var(--bc-color-outage),
-    fg: var(--bc-color-surface),
+    fg: var(--bc-color-on-danger),
     border: transparent,
     hover-bg: color-mix(in oklab, var(--bc-color-outage) 86%, black),
   ),
