@@ -6,6 +6,7 @@ import { IncidentStore } from '../core/store'
 import { THEME_STORAGE_KEY } from '../core/theme/theme.constants'
 import { AppRoot } from '../shell/AppRoot'
 
+/** Every page: name, route and an element that exists once it has loaded. */
 const PAGES = [
   ['overview', '#/', 'beacon-service-row'],
   ['service detail', '#/services/checkout', 'bc-tabs'],
@@ -17,11 +18,14 @@ const PAGES = [
 /**
  * Runs axe on the whole document (axe walks open shadow roots) and returns
  * a readable list of violations.
+ *
+ * @returns One line per violation: rule id and the affected selectors.
  */
 async function violations(): Promise<string[]> {
   const results = await axe.run(document, {
     runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'] },
   })
+
   return results.violations.map(
     (violation) =>
       `${violation.id}: ${violation.nodes.map((node) => node.target.join(' ')).join(', ')}`,

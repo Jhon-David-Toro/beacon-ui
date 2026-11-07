@@ -13,6 +13,7 @@ export async function fixture<T extends Element = LitElement>(markup: string): P
   document.body.append(host)
   const element = host.firstElementChild as T
   await settle(element)
+
   return element
 }
 
@@ -35,6 +36,8 @@ export async function settle(element: Element): Promise<void> {
  *
  * @param host - Element whose shadow root is searched.
  * @param selector - CSS selector to match.
+ * @returns The matching element.
+ * @throws {Error} When nothing matches.
  */
 export function shadowQuery<K extends keyof HTMLElementTagNameMap>(
   host: Element,
@@ -50,6 +53,7 @@ export function shadowQuery(host: Element, selector: string): HTMLElement {
  *
  * @param root - Element searched.
  * @param selector - CSS selector to match.
+ * @returns The matching element.
  */
 export function lightQuery<K extends keyof HTMLElementTagNameMap>(
   root: ParentNode,
@@ -66,12 +70,15 @@ export function lightQuery(root: ParentNode, selector: string): HTMLElement {
  * @param root - Node to search, or `null` when a shadow root is missing.
  * @param selector - CSS selector to match.
  * @param owner - Name used in the error message.
+ * @returns The matching element.
+ * @throws {Error} When nothing matches, naming the selector and the owner.
  */
 function mustFind(root: ParentNode | null, selector: string, owner: string): HTMLElement {
   const found = root?.querySelector<HTMLElement>(selector)
   if (!found) {
     throw new Error(`No "${selector}" inside <${owner}>`)
   }
+
   return found
 }
 
@@ -82,6 +89,7 @@ function mustFind(root: ParentNode | null, selector: string, owner: string): HTM
  *
  * @param root - Node to start from.
  * @param selector - CSS selector to match.
+ * @returns The first match, or `null`.
  */
 export function deepQuery(root: ParentNode, selector: string): HTMLElement | null {
   const direct = root.querySelector<HTMLElement>(selector)
@@ -99,6 +107,7 @@ export function deepQuery(root: ParentNode, selector: string): HTMLElement | nul
       return found
     }
   }
+
   return null
 }
 
@@ -106,6 +115,7 @@ export function deepQuery(root: ParentNode, selector: string): HTMLElement | nul
  * Text content of an element, flattened across shadow roots and slots.
  *
  * @param node - Element to read.
+ * @returns The visible text, as one string.
  */
 export function deepText(node: Node): string {
   if (node.nodeType === Node.TEXT_NODE) {
@@ -114,5 +124,6 @@ export function deepText(node: Node): string {
   const element = node as Element
   const children = element.shadowRoot ? [...element.shadowRoot.childNodes] : [...node.childNodes]
   const slotted = element instanceof HTMLSlotElement ? element.assignedNodes({ flatten: true }) : []
+
   return [...(slotted.length ? slotted : children)].map(deepText).join('')
 }

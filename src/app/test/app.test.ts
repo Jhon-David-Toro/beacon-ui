@@ -4,18 +4,21 @@ import { deepQuery, deepText } from '../../test/fixture'
 import { IncidentStore } from '../core/store'
 import { AppRoot } from '../shell/AppRoot'
 
+/** Longer than the mock API delay, so data has time to arrive. */
 const LOAD_TIMEOUT = { timeout: 3000 }
 
 /**
  * Mounts the app at a route with an empty, in-memory store.
  *
  * @param hash - Route to start on.
+ * @returns The mounted app.
  */
 async function mountApp(hash: string): Promise<AppRoot> {
   location.hash = hash
   const app = new AppRoot(new IncidentStore(null))
   document.body.append(app)
   await app.updateComplete
+
   return app
 }
 
@@ -26,6 +29,8 @@ async function mountApp(hash: string): Promise<AppRoot> {
  *
  * @param app - App root.
  * @param selectors - One selector per shadow-root level.
+ * @returns The element found at the last level.
+ * @throws {Error} When nothing matches within the timeout.
  */
 async function find(app: AppRoot, ...selectors: string[]): Promise<HTMLElement> {
   const resolve = () =>
@@ -38,6 +43,7 @@ async function find(app: AppRoot, ...selectors: string[]): Promise<HTMLElement> 
   if (!found) {
     throw new Error(`Not found: ${selectors.join(' > ')}`)
   }
+
   return found
 }
 
