@@ -1,0 +1,81 @@
+@use '../../design-system/styles/mixins' as *;
+
+// Page width and gutters shared by the header and every view.
+@mixin container {
+  width: min(100% - var(--bc-space-32), 1120px);
+  margin-inline: auto;
+
+  @include from('tablet') {
+    width: min(100% - var(--bc-space-64), 1120px);
+  }
+}
+
+@mixin page-title {
+  margin: 0;
+  @include type('xl', 650, 'display', var(--bc-leading-tight));
+  letter-spacing: -0.02em;
+
+  @include from('tablet') {
+    font-size: 2.5rem;
+  }
+}
+
+@mixin section-title {
+  margin: 0;
+  @include type('l', 600, 'display', var(--bc-leading-tight));
+}
+
+@mixin muted {
+  color: var(--bc-color-text-muted);
+}
+
+@mixin reset-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@mixin link {
+  color: inherit;
+  text-decoration-color: color-mix(in oklab, currentcolor 35%, transparent);
+  text-underline-offset: 0.2em;
+
+  &:hover {
+    text-decoration-color: currentcolor;
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+    border-radius: var(--bc-radius-s);
+  }
+}
+
+// Page shell shared by the route views.
+@mixin view {
+  @include host-base;
+
+  :host {
+    display: block;
+    padding-block: var(--bc-space-32) var(--bc-space-64);
+
+    @include from('tablet') {
+      padding-block-start: var(--bc-space-48);
+    }
+  }
+
+  .container {
+    @include container;
+  }
+
+  a {
+    @include link;
+  }
+
+  h1 {
+    @include page-title;
+  }
+
+  h2 {
+    @include section-title;
+  }
+}

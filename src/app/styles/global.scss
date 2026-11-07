@@ -1,0 +1,45 @@
+// Light-DOM styles for the page itself. Components style themselves.
+@use '../../design-system/styles/mixins' as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bc-color-bg);
+  color: var(--bc-color-text);
+  font-family: var(--bc-font-body);
+  line-height: var(--bc-leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  margin: 0;
+}
+
+.skip-link {
+  position: absolute;
+  inset-block-start: var(--bc-space-8);
+  inset-inline-start: var(--bc-space-8);
+  z-index: 200;
+  padding: var(--bc-space-8) var(--bc-space-16);
+  border-radius: var(--bc-radius-m);
+  background: var(--bc-color-primary);
+  color: var(--bc-color-on-primary);
+  font-weight: 600;
+  translate: 0 -200%;
+
+  &:focus-visible {
+    @include focus-ring;
+    translate: 0 0;
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--bc-duration-base);
+}
